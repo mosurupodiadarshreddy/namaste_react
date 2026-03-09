@@ -1,0 +1,36 @@
+.header{
+    display: flex;
+    justify-content: space-between;
+    background-color: rgb(128, 162, 167);
+    border: 2px solid rgb(78, 90, 88);
+    margin: 5px;
+    align-items: center;
+}
+.heading h1{
+    display: flex;
+    align-items: center;
+    color: beige;
+    font-family: "mont-serrat", sans-serif;
+}
+.logo{
+    width: 100px;
+    height: 100px;
+    padding: 5px;
+    margin: 5px;
+}
+.hindupur-img-logo{
+    width: 300px;
+    height: 100px;
+    padding: 5px;
+    margin: 5px;
+}
+.nav-items > ul{
+    display: flex;
+    font-size: 25px;
+    list-style: none;
+    align-items: center; 
+}
+
+.nav-items > ul > li{
+    padding: 10px;
+}

@@ -1,0 +1,314 @@
+- Default EXPORT/IMPORT
+ 	export default component;
+	import component from "path"
+
+-Named EXPORT/IMPORT
+	export const component
+	import {component} from "path"
+
+React Hooks ::: 
+	(normal JS utility functions)
+	(-usestate()) -- superpower state variables 
+	(-useeffect())
+
+1)import usestate from react and we should import it like as named import import { usestate } from react;
+2)that usestate maintains the state of component,
+3)create variable like usestate();
+4)const [listofrestaurants] = usestate(); ----- it is called state variable 
+5)inside usesate(default value) it means when ever react component renders by default we will give some value for that variable 
+6)to modify that varaiable data we have one more function as one more parameter [listofrestaurants,setlistofrestaurants] we can name it as as whatever as we want but in industry this is followed
+7)if we have state variable it keeps ui in sink with ui layer it will automatically updates ui 
+8)**************when ever state variable updates react re-renders the component  
+9)React keep insink with datalayer as soon as datalayer updates ui will updates how it will update by re-rendering..
+
+10)React uses something knows as re-conciliation algorithm also known as react fiber
+11)On the UI we have the DOM it is like tree right 
+12)suppose we have res-container and it have 15 cards data 
+13)now my UI changes filter from 15 to 9-10 cards 
+14)🧠 The Story of UI Updates in React
+
+(Virtual DOM → Diff Algorithm → Real DOM)
+
+🟢 1️⃣ Real DOM (What the Browser Actually Shows)
+What is Real DOM?
+
+The Real DOM is:
+
+The actual HTML structure
+
+Created and managed by the browser
+
+What you see on the screen
+
+Example:
+
+<div id="root">
+  <h1>Count: 0</h1>
+  <button>+</button>
+</div>
+
+Important truth
+
+Updating the Real DOM is slow
+
+Browser has to:
+
+recalculate layout
+
+repaint UI
+
+reflow elements
+
+So frequent direct DOM updates = ❌ performance issues.
+
+🟡 2️⃣ Virtual DOM (React’s Smart Copy)
+What is Virtual DOM?
+
+The Virtual DOM is:
+
+A JavaScript object
+
+A copy of the UI
+
+Stored in memory
+
+Controlled by React
+
+Example Virtual DOM (simplified):
+
+{
+  type: "div",
+  children: [
+    { type: "h1", children: "Count: 0" },
+    { type: "button", children: "+" }
+  ]
+}
+
+
+⚠️ This is NOT HTML
+It is just JavaScript objects
+
+🔵 Why React Uses Virtual DOM
+
+Because:
+
+JS objects are fast to create
+
+Easy to compare
+
+Easy to change
+
+React never touches the Real DOM directly first.
+
+🧩 3️⃣ Diff Algorithm (React’s Brain 🧠)
+What is Diff Algorithm?
+
+The Diff Algorithm is:
+
+React’s comparison logic
+
+Compares old Virtual DOM with new Virtual DOM
+
+Finds the smallest change needed
+
+🔥 REAL-TIME EXAMPLE (Best way to understand)
+React Code
+const Counter = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <button onClick={() => setCount(count + 1)}>+</button>
+    </div>
+  );
+};
+
+🟢 Initial Render
+Virtual DOM v1
+h1 → "Count: 0"
+button → "+"
+
+Real DOM
+<h1>Count: 0</h1>
+<button>+</button>
+
+
+Everything matches ✅
+
+🔴 User clicks button
+
+setCount(1) is called.
+
+🟡 New Virtual DOM Created (v2)
+h1 → "Count: 1"
+button → "+"
+
+
+React now has:
+
+Old Virtual DOM (Count: 0)
+
+New Virtual DOM (Count: 1)
+
+🧠 Diff Algorithm Runs
+
+React compares node by node:
+| Element | Old      | New      | Change? |
+| ------- | -------- | -------- | ------- |
+| h1      | Count: 0 | Count: 1 | ✅ YES   |
+| button  | +        | +        | ❌ NO    |
+🟢 Real DOM Update (MINIMAL)
+
+React updates only this:
+
+<h1>Count: 1</h1>
+
+
+❌ Button untouched
+❌ No full re-render
+❌ No full page repaint
+
+This is performance magic ⚡
+
+🧱 Real-Life Analogy (Very Clear)
+House Renovation 🏠
+| Concept        | Analogy                       |
+| -------------- | ----------------------------- |
+| Real DOM       | Actual house                  |
+| Virtual DOM    | Blueprint                     |
+| Diff Algorithm | Comparing old & new blueprint |
+| ReactDOM       | Workers making changes        |
+
+You don’t destroy the whole house
+You change only the broken window 🪟
+
+🧠 Why NOT Direct DOM Manipulation?
+Vanilla JS way ❌
+document.getElementById("count").innerText = count;
+
+
+Problems:
+
+You decide WHAT + HOW
+
+You manage updates manually
+
+Hard to scale
+
+Easy to introduce bugs
+
+React way ✅
+setCount(count + 1);
+
+
+React decides:
+
+what changed
+
+where to update
+
+how to update
+
+🔑 Key Takeaways (Memorize This)
+✅ Virtual DOM
+
+A lightweight JavaScript representation of UI stored in memory.
+
+✅ Diff Algorithm
+
+A process that compares old and new Virtual DOM to find minimal changes.
+
+✅ Real DOM
+
+The actual browser DOM that users see and interact with.
+
+🎯 One-Line Interview Answer
+
+React uses a Virtual DOM to keep UI updates fast. When state changes, React creates a new Virtual DOM, compares it with the old one using a diff algorithm, and updates only the changed parts of the real DOM.
+
+
+📱 Daily Life Example: Mobile Phone Contacts Edit
+🟢 Real DOM = Contact Saved in Phone
+
+You have a contact saved in your phone:
+
+Name: Ramesh
+Phone: 9876543210
+City: Hyderabad
+
+
+This is like the Real DOM:
+
+Actual data used by the phone
+
+Visible on screen
+
+Editing it is costly (UI redraws, validations, save operations)
+
+🟡 Virtual DOM = Edit Screen (Temporary Copy)
+
+When you tap Edit, the phone does NOT directly change the saved contact.
+
+Instead, it opens an edit screen:
+
+Name: Ramesh
+Phone: 9876543210
+City: Hyderabad
+
+
+This editable form is the Virtual DOM:
+
+A temporary copy
+
+Safe to change
+
+No real update yet
+
+🔵 Diff Algorithm = Comparing Old vs Edited Contact
+
+You change only City:
+
+City: Bangalore
+
+
+Now phone compares:
+
+City: Bangalore
+
+This comparison is the Diff Algorithm 🧠
+
+🔴 Real DOM Update = Save Only Changed Field
+
+When you press Save:
+
+✔ Phone updates only City
+❌ Name & Phone untouched
+❌ Contact not recreated
+
+This is exactly how React updates DOM.
+
+🔁 React Mapping (Very Clear)
+
+| Phone Example    | React              |
+| ---------------- | ------------------ |
+| Saved Contact    | Real DOM           |
+| Edit Screen Copy | Virtual DOM        |
+| Field Comparison | Diff Algorithm     |
+| Update City Only | Minimal DOM update |
+
+🧠 Why This Example Is Better
+
+Happens every day
+
+Clear “copy → edit → compare → save”
+
+No abstract ideas
+
+Matches React behavior exactly
+
+🎯 One-Line Interview Answer
+
+React works like editing a phone contact: it edits a copy, compares old and new values, and saves only what changed instead of rewriting everything.
+
+--- on every render cycle it updates DOM'S it makes diffing 

@@ -1,0 +1,61 @@
+What is hook finally a day :: 
+
+It is a normal javascript function which react gives to us it has its own specific usecase where we use these functions
+
+A Hook is a way for React to connect (hook) your component to React features like state, lifecycle, or context.
+
+it comes from react library and we can import it along with usestate
+
+Syntax of useEffect:: 
+
+useEffect(()=> {},[]); 
+
+we will pass two arguments to the useeffect 1)arrow function means callback function 2)dependency array
+
+ useEffect(() => {
+        console.log("useeffect running");
+    },[]);
+
+when will this useEffect callback function be called ....???
+
+The callback function is called after the component is rendered let me repeat it once again the callbackfunction in the useEffect is called after component is rendered only 
+
+so when the body component will load right it will render the component as soon as render cycle finished it will call callback function ,, body component rendered and callback function and loads in component is it that easy yes it is that easy 
+
+⭐⭐⭐⭐if you want to do something after rendering the component we should right in the useeffect that is purpose of useeffect 
+
+so while executing body component it sees useEffect and save this callback function to call it after render 
+
+for showing in action open code practice and see put the debugger and observe after rendering completion only it will go to the useeffect block 
+
+
+why we learning the useeffect u know right because of second approach render component fetch api and re-render the component 
+
+
+goinf with example :: 
+
+const fetchData = async () => {
+        try{
+            const data = await fetch("https://www.swiggy.com/dapi/restaurants/list/v5?lat=13.0358&lng=77.5970&page_type=DESKTOP_WEB_LISTING");
+            const result =await  data.json()
+            console.log(result);
+        }
+        catch(error)
+        {
+            console.log(error);
+        }  
+    } 
+
+when we try this we got cors issue :: 
+
+so basically calling swiggy.com from localhost has been blocked due to cors policy what is this cors policy so who is blocking us so our browser only blocking use to make an api call from one origin to different origin 
+
+so go to youtube and check cors video of akshaysaini and watch it good video lot things has been discussed there ... 
+
+so for now how can we bypass this cors 
+
+write cors chrome extension in chrome and add it to the chrome and after that in chrome go to extensions and there find toggles for installed cors extensiona nd make it on and now it will work how amazing right😍😍😍😍 ... second option you can use this also Moesif chrome extension also 
+
+so now we make loading until data gets and did in coding project check there clearly >>>>worked in code <<<<<<<
+
+and now instead of showing loading again latest we are using the shimmer.ui >>>>> worked in code <<<<<<<<

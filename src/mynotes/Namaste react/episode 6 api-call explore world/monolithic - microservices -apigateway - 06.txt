@@ -1,0 +1,347 @@
+Monolith Architecture :: 
+
+1️⃣ What is Monolithic Architecture
+Monolithic architecture means the entire application is built as a single unit.
+
+All parts of the application like:
+
+UI (frontend)
+Business logic
+Database access
+Authentication
+APIs
+
+are inside one single codebase and deployed together.
+
+Think of it like one big application block.
+
+Simple Example
+
+Suppose you build an E-commerce application.
+In a Monolithic architecture, everything is in one project:
+
+Ecommerce Application
+│
+├── User Module
+├── Product Module
+├── Order Module
+├── Payment Module
+├── Authentication
+└── Database Connection
+
+All of these run inside the same application server.
+
+If you deploy the app, everything deploys together.
+
+2️⃣ Real Life Example
+
+Think of a restaurant kitchen with one chef doing everything:
+
+cooking
+billing
+cleaning
+serving
+
+Everything happens in one place with one system.
+
+That is like Monolithic Architecture.
+
+3️⃣ Simple Diagram (Concept)
+          Client
+            |
+            |
+      -----------------
+      |  Monolithic   |
+      |  Application  |
+      -----------------
+      | UI            |
+      | Business Logic|
+      | Database Code |
+      -----------------
+            |
+         Database
+
+Everything is tightly connected.
+
+4️⃣ Advantages
+
+Interview point ⭐
+
+1️⃣ Easy to develop initially  One codebase Simple structure
+2️⃣ Easy to test Everything is together
+3️⃣ Easy deployment Only one application to deploy 
+
+
+5️⃣ Disadvantages This is why companies moved to Microservices.
+
+1️⃣ Hard to scale If only payment module needs scaling, you must scale the whole application.
+2️⃣ Hard to maintain If application grows to 1 million lines of code, it becomes messy.
+3️⃣ Small change → redeploy entire app
+4️⃣ One bug can crash whole application and if we need to change one button colour means again we need to deploy full application big process
+
+===========================================================================================
+
+1️⃣ What is Microservices Architecture?
+
+Microservices architecture means breaking a large application into many small independent services.
+
+Each service:
+
+does one specific job runs independently can be developed, deployed, and scaled separately
+Instead of one big application, we have many small applications working together.
+
+2️⃣ Simple Example (E-commerce App)
+
+Instead of one big monolithic app, we split it into services:
+
+Client
+  |
+  |---- User Service
+  |
+  |---- Product Service
+  |
+  |---- Order Service
+  |
+  |---- Payment Service
+  |
+  |---- Notification Service
+
+Each service:
+
+has its own code sometimes its own database communicates using APIs
+
+3️⃣ Real-Life Example
+
+Think of a restaurant with specialized staff:
+| Role    | Work     |
+| ------- | -------- |
+| Chef    | cooking  |
+| Cashier | billing  |
+| Waiter  | serving  |
+| Cleaner | cleaning |
+
+
+Each person does one specific task. If one person is busy, you add more people in that role. That is exactly how microservices work.
+
+4️⃣ Microservices Diagram (Concept)
+              Client
+                |
+           API Gateway
+                |
+     ---------------------------
+     |        |        |       |
+ UserSvc  ProductSvc  OrderSvc PaymentSvc
+     |        |        |       |
+    DB       DB       DB      DB
+
+Each service is independent.
+
+5️⃣ Advantages
+1️⃣ Easy to scale If payment service is heavy, scale only that. Not the entire system.
+2️⃣ Independent deployment You can deploy Order service without touching others.
+3️⃣ Smaller codebase Each team works on their own service.
+4️⃣ Fault isolation If Notification service fails, other services still work.
+
+6️⃣ Disadvantages
+1️⃣ Complex architecture More services → more communication.
+2️⃣ Network calls Services talk through HTTP / APIs, which adds latency.
+3️⃣ Hard debugging If something fails, you must check multiple services.
+
+7️⃣ Example Technologies Used
+Common microservice tools:
+
+Spring Boot
+Node.js
+Docker
+Kubernetes
+Kafka / RabbitMQ
+API Gateway
+
+Large companies using microservices:
+Netflix
+Amazon
+Uber
+Spotify
+
+8️⃣ Interview Answer (Best Version)
+
+If interviewer asks What is Microservices Architecture?
+
+You can say:
+
+Microservices architecture is a design approach where a large application is divided into multiple small independent services. Each service handles a specific business function and can be developed, deployed, and scaled independently. These services communicate with each other using APIs.
+
+9️⃣ Quick Monolith vs Microservices (Very Good Interview Point)
+| Monolithic          | Microservices          |
+| ------------------- | ---------------------- |
+| One big application | Many small services    |
+| Single deployment   | Independent deployment |
+| Hard to scale       | Easy to scale          |
+| Tightly coupled     | Loosely coupled        |
+
+===========================================================================================
+
+1️⃣ API Gateway (Basic Idea)
+Simple Meaning
+
+An API Gateway is a single entry point for all backend services.
+
+Instead of your frontend calling many services directly, it calls one gateway, and the gateway routes the request to the correct service.
+
+Without API Gateway
+
+Frontend talks to many services directly:
+
+React App
+   |
+   |---- User Service
+   |---- Product Service
+   |---- Payment Service
+   |---- Order Service
+
+Problems:
+
+Too many URLs
+Hard to manage
+Security issues
+
+With API Gateway
+React App
+    |
+    |------ API Gateway
+              |
+              |---- User Service
+              |---- Product Service
+              |---- Payment Service
+              |---- Order Service
+
+Frontend calls only one base URL.
+
+Example:
+fetch("https://api.myapp.com/users")
+The API Gateway decides where to send it.
+What API Gateway Does (Simple)
+
+| Feature        | Meaning                          |
+| -------------- | -------------------------------- |
+| Routing        | Sends request to correct service |
+| Authentication | Checks login / token             |
+| Rate limiting  | Prevents too many requests       |
+| Security       | Protects backend services        |
+
+Real Examples
+
+Popular API Gateways:
+
+Kong
+
+AWS API Gateway
+
+NGINX
+
+Spring Cloud Gateway
+
+2️⃣ Domain (Basic Meaning)
+
+A domain is the website address users type in the browser.
+
+Example:
+
+google.com
+amazon.com
+myapp.com
+In frontend projects
+
+Example:
+
+Frontend
+https://app.mycompany.com
+
+Backend
+https://api.mycompany.com
+
+So your React app might call:
+
+fetch("https://api.mycompany.com/products")
+Why companies use different domains
+
+Separation of systems:
+| Domain            | Purpose     |
+| ----------------- | ----------- |
+| app.company.com   | Frontend    |
+| api.company.com   | Backend     |
+| admin.company.com | Admin panel |
+
+3️⃣ Pods (Very Basic Explanation)
+
+Pods come from Kubernetes.
+
+You don’t need deep knowledge — just basic idea.
+
+Simple Meaning
+
+A Pod is the smallest unit that runs an application container.
+
+Usually it runs a Docker container.
+
+Example
+
+Your backend service might run like this:
+
+User Service
+   |
+   |---- Pod 1
+   |---- Pod 2
+   |---- Pod 3
+
+Why multiple pods?
+
+➡️ To handle many users at the same time
+
+If traffic increases:
+
+Pod 1
+Pod 2
+Pod 3
+Pod 4
+Pod 5
+
+This is called scaling.
+
+Real Life Example
+
+Think of pods like multiple servers running the same backend.
+
+If one fails:
+
+Another pod handles the request.
+
+4️⃣ How Everything Connects (Full Flow)
+
+Example when React calls backend:
+
+User opens React App
+        |
+        v
+   Domain (app.myapp.com)
+        |
+        v
+React calls API
+https://api.myapp.com/products
+        |
+        v
+     API Gateway
+        |
+        v
+ Product Service
+        |
+        v
+   Running in Pods
+5️⃣ Perfect Frontend Interview Answer
+
+If interviewer asks Do you know API Gateway?
+
+You can say:
+
+Yes, I know the basic concept. An API Gateway acts as a single entry point between the frontend and backend services. Instead of the frontend calling multiple microservices directly, it sends requests to the gateway, which routes them to the appropriate service. It also handles things like authentication, routing, and security.
+===========================================================================================

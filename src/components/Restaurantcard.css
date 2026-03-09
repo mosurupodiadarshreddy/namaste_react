@@ -1,0 +1,26 @@
+.restaurant-card{
+    background-image: linear-gradient(to bottom,rgb(188, 234, 231),rgb(249, 249, 248));
+    width: 228px;
+    /* height: 320px; */
+    /* border: 1px solid blue; */
+    overflow: hidden;
+    padding: 2px;
+    margin: 5px;
+    border-radius: 10px;
+    border-top: 3px solid green;
+    border-bottom: 1px solid green;
+}
+
+.restaurant-card:hover{
+    border: 1px solid rgb(109, 109, 110);
+    cursor: pointer;
+    border-left: 3px solid green;
+    border-right: 3px solid green;
+    border-bottom: 1px solid green;
+    border-top: 1px solid green;
+}
+.restaurantcard-logo{
+    height: 120px;
+    width: 228px;
+    border-radius: 10px;
+}

@@ -1,0 +1,20 @@
+.body{
+    margin: 5px;
+    padding: 10px;
+    border: 1px solid rgb(57, 57, 58);
+    background-color: rgb(227, 220, 210);
+}
+.res-cards-container{
+    display: flex;
+    flex-wrap: wrap;
+}
+button{
+    margin: 5px;
+    color: rgb(246, 242, 242);
+    padding: 5px;
+    background-color: rgb(10, 82, 70);
+    border-radius: 10px;
+}
+.button-container{
+    background-color: blanchedalmond;
+}

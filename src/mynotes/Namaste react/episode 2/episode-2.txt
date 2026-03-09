@@ -1,0 +1,201 @@
+1)install git get url from google download it for the windows and keep 
+2)then go to the terminal of your project folder and run command git init 
+3)then create main branch with command "git branch -M main" (create default branch as main instead of master)
+4)then create one README.md file in your project folder
+5)add something to readme file as of just we kept it as namaste react
+
+6)now lets push code to git 
+ 	6.1)git add . (it will push all the files)
+	6.2)git commit -m "episode-01" (to commit code changes)
+	6.3)so  now we need to verify the user details if first time for that follow 
+	6.4)git config --global user.name "Adarsh Reddy"
+	6.5)git config --global user.email "adarshreddy713@gmail.com"
+	6.6)git config --global --list
+	6.7)You should see:user.name=Adarsh Reddy
+		      	   user.email=adarshreddy713@gmail.com
+	6.8)after that git add . and git commit once again now code changes will be pushed 
+	6.9)now add Add remote: git remote add origin git@github.com:mosurupodiadarshreddy/namaste_react.git
+	✅ 1) Initialize Git in local project
+git init
+
+
+Meaning:
+
+Created a new local Git repository in your project folder
+
+✅ 2) Connect local repo to GitHub (set remote origin)
+git remote add origin git@github.com:mosurupodiadarshreddy/namaste_react.git
+
+
+Meaning:
+
+Linked your local repo to GitHub repo
+
+origin = alias name for remote repository
+
+Check remote:
+
+git remote -v
+
+✅ 3) Tried to push — but SSH key not configured
+git push origin main
+
+
+GitHub replied:
+
+Permission denied (publickey)
+
+
+Meaning:
+
+GitHub required SSH authentication
+
+No SSH key existed on your system
+
+✅ 4) Checked .ssh folder
+dir $HOME\.ssh
+
+
+Result → only known_hosts present
+(No SSH key yet)
+
+✅ 5) Generated new SSH key
+ssh-keygen -t ed25519 -C "adarshreddy713@gmail.com"
+
+
+Meaning:
+
+Created secure SSH key pair
+
+Files created:
+
+id_ed25519        (private key)
+id_ed25519.pub    (public key)
+
+
+Location:
+
+C:\Users\adars\.ssh\
+
+✅ 6) Copied public key
+cat $HOME\.ssh\id_ed25519.pub
+
+
+Meaning:
+
+Displayed public key to add in GitHub
+
+✅ 7) Added SSH key in GitHub
+
+Path:
+
+GitHub → Settings → SSH & GPG Keys → New SSH Key
+
+
+Meaning:
+
+Allowed your PC to authenticate with GitHub
+
+✅ 8) Tested SSH connection
+ssh -T git@github.com
+
+
+Output:
+
+You've successfully authenticated
+
+
+Meaning:
+
+SSH authentication working successfully 🎯
+
+✅ 9) Tried pushing again — got remote updates error
+git push -u origin main
+
+
+Git said:
+
+rejected — remote contains work you do not have
+
+
+Meaning:
+
+GitHub already had commits (README etc.)
+
+Local repo needed to pull first
+
+✅ 10) Pulled remote branch safely
+git pull origin main --allow-unrelated-histories
+
+
+Meaning:
+
+Fetched remote commits from GitHub
+
+Merged into local repository
+
+⚠️ 11) Faced merge conflict (README.md)
+
+Git output:
+
+CONFLICT (add/add): Merge conflict in README.md
+
+
+Meaning:
+
+Same file modified in both:
+
+local repo
+
+remote repo
+
+You manually resolved file in editor 👍
+
+✅ 12) Staged resolved file
+git add README.md
+
+✅ 13) Completed merge commit
+git commit -m "Resolve README.md merge conflict"
+
+
+Meaning:
+
+Saved conflict resolution
+
+✅ 14) Pushed successfully to main branch
+git push -u origin main
+
+
+Meaning:
+
+Local branch & remote branch are now in sync
+🧾 Meaning in simple terms
+
+👉 Repo name
+
+namaste_react
+
+
+👉 Branch in repo
+
+main
+
+
+👉 Your code is stored in
+
+namaste_react / main
+
+
+Everything is correctly set up ✔️
+
+🚀 From now on (workflow for next updates)
+
+Whenever you make changes:
+
+git add .
+git commit -m "your message"
+git push
+
+
+Since upstream is set, git push alone works.
+
