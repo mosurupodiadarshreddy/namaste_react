@@ -31,11 +31,13 @@ const Body = () => {
         }  
     }  
 
-    if(ListofRestros.length === 0){
-        return <Shimmer/>;
-    }
+    //this is what conditional rendering 
+    // if(ListofRestros.length === 0){
+    //     return <Shimmer/>;
+    // }
 
-    return(
+    //turnery operator conditional rendering
+    return ListofRestros.length === 0 ? <Shimmer/> : (
     <div className="body">
         <div className="search-bar">
             {/* hello for search  */}

@@ -24,3 +24,9 @@
     width: 228px;
     border-radius: 10px;
 }
+
+.menu-button{
+    color: rgb(241, 241, 239);
+    background-color: rgb(33, 151, 187);
+    border: none;
+}

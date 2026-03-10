@@ -20,14 +20,10 @@ const Restaurantcard = ({restaurantdata}) => {
             <h5>Rating : {avgRating} ⭐</h5>
             <h5>Area : {areaName} </h5>
             <h5>Status : {isOpen ? "open 🟢" : "close 🔴"}</h5>
-            <button onClick={menu}>Menu</button>
             {/* <h5 className="price">status : {availability?.opened ? "open" : "close"}</h5> */}
         </div>
     )
 
-    function menu  (restaurantdata)  {
-        return <Menucard restaurantdata={restaurantdata}/>
-    }
 }
 
 export default Restaurantcard;

@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import "./Header.css";
 import {HEADER_LOGO,HINDUPUR_LOGO} from "../utils/constants";
 import link from "react-dom";
 
 const Header = () => {
+    // let btnName = "Login";
+    const [btnName,setBtnName]= useState("login")
     return (
         <div className="header">
             <div className="logo-container">
@@ -18,12 +20,15 @@ const Header = () => {
             </div>
             <div className="nav-items">
                 <ul>
-                   <a link="https://en.wikipedia.org/wiki/Hindupur_railway_station">
-                   <li>Home</li></a>
+                   <button className="loginbutton" onClick={()=> {
+                    btnName === "Login" ?
+                        setBtnName("Logout") : setBtnName("Login");
+                   }}>{btnName}</button>
                     <li>About</li>
                     <li>contact</li>
                     <li>Email</li>
-                    <li>Cart</li>   
+                    <li>Cart</li>
+                    <li>Home</li>   
                 </ul>
             </div>
         </div>

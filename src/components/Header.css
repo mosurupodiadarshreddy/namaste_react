@@ -34,3 +34,7 @@
 .nav-items > ul > li{
     padding: 10px;
 }
+
+.loginbutton{
+    cursor: pointer;
+}

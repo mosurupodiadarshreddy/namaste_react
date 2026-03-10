@@ -59,3 +59,15 @@ write cors chrome extension in chrome and add it to the chrome and after that in
 so now we make loading until data gets and did in coding project check there clearly >>>>worked in code <<<<<<<
 
 and now instead of showing loading again latest we are using the shimmer.ui >>>>> worked in code <<<<<<<<
+
+what is conditional rendering : for rendering any component if we use condition means it is called conditional rendering for suppose we have list of cards to display before fetching them we use to display shimmer component menas we use condition there if displayitems is null then display shimmer effect component so it is called conditional rendering 
+//this is what conditional rendering 
+    if(ListofRestros.length === 0){
+        return <Shimmer/>;
+    }
+
+>>>>>>>>worked in code <<<<<<<<<<<
+
+and we used turnery operator here making condition at the return keyword beside only 
+
+
