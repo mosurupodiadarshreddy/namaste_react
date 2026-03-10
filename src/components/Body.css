@@ -17,4 +17,9 @@ button{
 }
 .button-container{
     background-color: blanchedalmond;
+    display: flex;
+}
+
+.search-bar{
+    float: right;
 }

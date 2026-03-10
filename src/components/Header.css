@@ -5,6 +5,7 @@
     border: 2px solid rgb(78, 90, 88);
     margin: 5px;
     align-items: center;
+    flex-wrap: wrap;
 }
 .heading h1{
     display: flex;
