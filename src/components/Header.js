@@ -6,7 +6,7 @@ import link from "react-dom";
 
 const Header = () => {
     // let btnName = "Login";
-    const [btnName,setBtnName]= useState("login")
+    const [btnName,setBtnName]= useState("Login")
     return (
         <div className="header">
             <div className="logo-container">

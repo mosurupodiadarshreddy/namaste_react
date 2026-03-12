@@ -11,7 +11,7 @@ import Menucard from "./Menucard";
 const Restaurantcard = ({restaurantdata}) => {
     const baseurl = "https://media-assets.swiggy.com/swiggy/image/upload/"
     console.log(restaurantdata);
-     const {isOpen,name,areaName,avgRating,cloudinaryImageId} = restaurantdata.info || {}; //{resname,rating,time,price} destructuring concept
+     const {isOpen,name,areaName,avgRating,cloudinaryImageId,costForTwo,locality,sla} = restaurantdata.info || {}; //{resname,rating,time,price} destructuring concept
     return (
         <div className="restaurant-card">
             <img className="restaurantcard-logo" src={baseurl+cloudinaryImageId} />
@@ -20,6 +20,9 @@ const Restaurantcard = ({restaurantdata}) => {
             <h5>Rating : {avgRating} ⭐</h5>
             <h5>Area : {areaName} </h5>
             <h5>Status : {isOpen ? "open 🟢" : "close 🔴"}</h5>
+            <h5>{costForTwo}</h5>
+            <h5>{locality}</h5>
+            <h5>Time to deliver : {sla.deliveryTime} Minutes</h5>
             {/* <h5 className="price">status : {availability?.opened ? "open" : "close"}</h5> */}
         </div>
     )

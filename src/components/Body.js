@@ -4,6 +4,7 @@ import Restaurantcard from "./Restaurantcard";
 import "./Body.css";
 import { useState,useEffect } from "react";
 import Shimmer from "./Shimmer";
+import { SWIGGY_API_HEBBAL_BANGLORE, SWIGGY_API_HEBBAL_HINDUPUR } from "../utils/constants";
 
 const Body = () => {
     //when ever state variable updates react triggers reconciliation cycle(rerenders the compoennt) 
@@ -11,7 +12,6 @@ const Body = () => {
     const [filteredRestros,setFilteredRestros] = useState([]);
     const [searchText,setSearchText] = useState("");
     // const [allrestros,setAllrestros] = useState([]);
-    const SWIGGY_API = "https://www.swiggy.com/dapi/restaurants/list/v5?lat=13.0358&lng=77.5970&page_type=DESKTOP_WEB_LISTING";
 
     useEffect(() => {
         console.log("useeffect called");
@@ -20,12 +20,10 @@ const Body = () => {
 
     const fetchData = async () => {
         try{
-            const data = await fetch(SWIGGY_API);
+            const data = await fetch(SWIGGY_API_HEBBAL_BANGLORE);
             const json =await data.json();
-            //chatgpt logic not written by own to get list from that API response 
-            const restrodata = json?.data?.cards?.find(
-            (card) => card?.card?.card?.gridElements?.infoWithStyle?.restaurants
-            )?.card?.card?.gridElements?.infoWithStyle?.restaurants;
+            // data destructuring
+            const restrodata =  json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
             setListofRestros(restrodata);
             setFilteredRestros(restrodata);
         }

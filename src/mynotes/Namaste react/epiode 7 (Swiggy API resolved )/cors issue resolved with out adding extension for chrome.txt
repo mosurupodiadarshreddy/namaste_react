@@ -1,0 +1,147 @@
+go to extensions and turn off extension in chrome so you code throws error like this :::
+
+
+Access to fetch at 'https://www.swiggy.com/dapi/restaurants/list/v5?lat=13.0358&lng=77.5970&page_type=DESKTOP_WEB_LISTING' from origin 'http://localhost:1234' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.Understand this error
+www.swiggy.com/dapi/restaurants/list/v5?lat=13.0358&lng=77.5970&page_type=DESKTOP_WEB_LISTING:1  Failed to load resource: net::ERR_FAILEDUnderstand this error
+Body.js:32 TypeError: Failed to fetch
+    
+
+
+so go to chrome cors.proxy.io :::: this basically helps us to bypass cors error so how to use this 
+
+copy this https://corsproxy.io/?{our url}  so what it will do 
+
+1️⃣ First — What Problem Are We Solving?
+
+When your React app runs on:
+
+http://localhost:3000
+
+and you call an API like:
+https://www.swiggy.com/dapi/restaurants/list/v5
+
+The browser checks something called CORS policy.
+
+If Swiggy does not allow requests from localhost, the browser blocks it.
+
+Error looks like:
+
+Access to fetch at 'https://www.swiggy.com/...'
+from origin 'http://localhost:3000'
+has been blocked by CORS policy
+
+This is browser security.
+
+2️⃣ What corsproxy.io Does
+
+A CORS proxy acts like a middleman.
+Instead of calling Swiggy directly:
+React App → Swiggy API ❌ blocked
+You call the proxy first:
+React App → CORS Proxy → Swiggy API → Response → React
+Now the browser sees:
+React → corsproxy.io
+
+And the proxy allows the request.
+
+3️⃣ How To Use It
+
+Take your API URL.
+Example:
+
+https://www.swiggy.com/dapi/restaurants/list/v5?lat=13.8281&lng=77.4914&page_type=DESKTOP_WEB_LISTING
+
+Add the proxy prefix:
+
+https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=13.8281&lng=77.4914&page_type=DESKTOP_WEB_LISTING
+4️⃣ Use It In React
+
+Example:
+
+const SWIGGY_API =
+"https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=13.8281&lng=77.4914&page_type=DESKTOP_WEB_LISTING";
+
+Then fetch normally:
+
+const data = await fetch(SWIGGY_API);
+const json = await data.json();
+5️⃣ What Actually Happens Internally
+
+Flow becomes:
+
+React App
+   ↓
+corsproxy.io
+   ↓
+Swiggy API
+   ↓
+corsproxy.io receives response
+   ↓
+corsproxy.io adds CORS headers
+   ↓
+Browser accepts response
+
+The proxy adds this header:
+Access-Control-Allow-Origin: *
+
+So browser allows it.
+
+6️⃣ Important ⚠️
+
+CORS proxy should be used only for:
+
+learning
+testing
+development
+
+Not production.
+
+Because:
+
+slow
+unreliable
+security risk
+
+Real apps solve CORS using backend servers.
+
+Example:
+
+React → Node backend → Swiggy API
+7️⃣ Quick Analogy
+
+Think of CORS proxy like this:
+
+You → Security Gate → Restaurant
+Security blocks you.
+So you go through a friend who is allowed:
+You → Friend → Restaurant → Friend → You
+The friend = corsproxy.io
+
+8️⃣ Short Interview Explanation
+
+If someone asks:
+
+What is CORS proxy?
+
+You can say:
+
+A CORS proxy acts as an intermediate server that forwards the request to the target API and adds the necessary CORS headers so the browser allows the response.
+
+
+Yeah — most public CORS proxies (including corsproxy.io) do have limits. They usually don’t advertise strict numbers, but there are practical restrictions. Here’s the real picture.
+
+1️⃣ Request Rate Limits
+
+Public proxies are shared by many developers, so they throttle traffic.
+Typical limits (approximate):
+
+10–100 requests per minute per IP
+
+If you exceed it → request may fail or slow down.
+
+Possible error you might see:
+
+429 Too Many Requests
+
+✅ Short answer:
+Yes — corsproxy.io has rate limits and reliability limits, so it’s good for development but not for production apps.
