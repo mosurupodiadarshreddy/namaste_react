@@ -1,0 +1,160 @@
+add json plugin for your chrome and hit that copied api in chrome and you will see the huge json list and go through it once 
+
+natural way of writing :
+
+const restrodata =  					json.data.cards[4].card.card.gridElements.infoWithStyle.restaurants;
+            setListofRestros(restrodata);
+            setFilteredRestros(restrodata);
+        }
+
+and will see diff between optional chainig and above code :
+
+1️⃣ Your Current Code (No Safety)
+const restrodata =
+json.data.cards[4].card.card.gridElements.infoWithStyle.restaurants;
+
+setListofRestros(restrodata);
+setFilteredRestros(restrodata);
+
+Here JavaScript reads the object step by step:
+
+json
+ → data
+   → cards
+     → [4]
+       → card
+         → card
+           → gridElements
+             → infoWithStyle
+               → restaurants
+
+If any one of these is undefined, JavaScript crashes.
+
+Example problem:
+
+cards[4] = undefined
+
+Then JS tries:
+
+undefined.card
+
+Which throws error:
+
+TypeError: Cannot read properties of undefined
+
+That is exactly the error you got earlier.
+
+2️⃣ With Optional Chaining (Safe Version)
+const restrodata =
+json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants;
+
+Now JavaScript behaves differently.
+
+It checks each step safely.
+
+Example:
+
+json
+ → data ?
+ → cards ?
+ → [4] ?
+ → card ?
+
+If something becomes undefined, JavaScript simply returns:
+
+undefined
+
+instead of crashing.
+
+3️⃣ Example Comparison
+❌ Without Optional Chaining
+const obj = {};
+console.log(obj.user.name);
+
+Result:
+
+ERROR
+Cannot read properties of undefined
+
+Because:
+
+obj.user = undefined
+✅ With Optional Chaining
+const obj = {};
+console.log(obj.user?.name);
+
+Result:
+
+undefined
+
+No crash.
+
+4️⃣ In Your Swiggy API Case
+❌ Without optional chaining
+
+If API changes like this:
+
+cards[4] → does not contain gridElements
+
+Your app crashes.
+
+✅ With optional chaining
+json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants
+
+If something is missing:
+
+restrodata = undefined
+
+Your React app does not crash.
+
+5️⃣ Why It Is Called "Safety"
+
+Optional chaining protects you from:
+
+undefined
+null
+missing API fields
+backend structure changes
+
+So it prevents runtime crashes.
+
+6️⃣ In Real Projects
+
+Developers almost always use optional chaining with APIs:
+
+const data =
+json?.data?.cards?.[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants;
+
+Because APIs are not guaranteed to always return same structure.
+
+7️⃣ But Your Thinking Is Also Correct
+
+You said:
+
+“If structure changes I will change the index.”
+
+For learning projects, this is perfectly fine.
+
+But in production apps, optional chaining avoids crashes for users.
+
+8️⃣ One Small Best Practice
+
+Even better:
+
+const restrodata =
+json?.data?.cards?.[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants || [];
+
+So if something fails:
+
+restrodata = []
+
+React will safely render.
+
+✅ Short summary
+
+| Without Optional Chaining    | With Optional Chaining |
+| ---------------------------- | ---------------------- |
+| App crashes if value missing | App continues safely   |
+| Strict property access       | Safe property access   |
+| `undefined.card` → error     | returns `undefined`    |
+

@@ -1,3 +1,0 @@
-When ever swiggy api got changed don't worry go to the swiggy.com and select location and select food delivery there open the network tab and refresh the page and there in inspect select the FETCH/XHR so we can see the api calls there and check for get api and we can copy that api to take latest api if they change no need to worry 
-
-
