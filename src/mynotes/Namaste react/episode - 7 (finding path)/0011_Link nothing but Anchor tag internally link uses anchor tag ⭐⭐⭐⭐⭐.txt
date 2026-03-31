@@ -1,0 +1,82 @@
+Yes, correct observation ⭐
+React Router <Link> internally renders an <a> (anchor) tag, but the behavior is different from a normal anchor tag.
+
+Let’s explain clearly — this is a very common interview question.
+
+1. Normal Anchor Tag
+<a href="/about">About</a>
+
+What happens:
+
+Browser sends request to server
+Page reloads
+Entire React app reloads
+SPA advantage lost
+
+This is called full page reload navigation
+
+2. React Router Link
+<Link to="/about">About</Link>
+
+In DevTools you will see:
+
+<a href="/about">About</a>
+
+So yes — Link renders an anchor tag internally.
+
+But React Router prevents the default browser reload and uses client-side routing.
+
+Instead of reloading page, it:
+
+Prevents default anchor behavior
+Changes URL using History API
+React Router renders new component
+Page does NOT reload
+
+This is called SPA Navigation (Client-side routing)
+
+3. Internal Working (Important)
+
+Internally Link does something like this:
+
+<a
+  href="/about"
+  onClick={(e) => {
+    e.preventDefault();
+    window.history.pushState({}, "", "/about");
+  }}
+>
+  About
+</a>
+
+So:
+
+Anchor tag → for accessibility & SEO
+preventDefault() → stops reload
+pushState() → changes URL
+Router renders component
+
+
+4. Anchor vs Link Difference Table
+
+| Anchor `<a>`   | React Router `<Link>` |
+| -------------- | --------------------- |
+| Reloads page   | No reload             |
+| Server request | Client-side routing   |
+| Slow           | Fast                  |
+| Not SPA        | SPA                   |
+| Loses state    | Keeps state           |
+
+5. Interview Answer (Very Important)
+
+If interviewer asks:
+
+What is Link in React Router?
+
+Answer:
+
+Link is a component in React Router used for client-side navigation. Internally it renders an anchor tag, but it prevents the default page reload and uses the history API to update the URL and render components without refreshing the page.
+
+6. One Line Remember
+
+Link = Anchor tag + preventDefault + History API + SPA navigation

@@ -1,0 +1,153 @@
+What are Children Routes?
+
+Definition:
+Children routes (nested routes) are routes that are rendered inside a parent route layout, so some components (like Header, Footer, Sidebar) stay fixed while only the main content (body) changes when navigating between pages.
+
+In simple words:
+
+A parent route contains common layout (Header, Footer), and child routes change only the body content.
+
+Example Scenario
+
+You have a website like this:
+
+Header
+------
+Body (Home / About / Dashboard / Profile)
+------
+Footer
+
+When navigating:
+
+Header should NOT reload
+Footer should NOT reload
+Only Body content should change
+
+This is where children routes are used.
+
+Layout Structure
+
+We create a Layout component:
+
+Layout
+ ├── Header
+ ├── Outlet (Body changes here)
+ └── Footer
+
+
+
+This is a React Router Nested Routes (Children Routes) layout structure. You implemented it correctly. Let me explain line by line and concept wise so you fully understand.
+
+1. What this code is doing overall
+
+This routing structure creates a layout like:
+
+Header
+------
+Body / About / Contact (changes here)
+------
+Footer
+
+Header and Footer stay constant → Outlet content changes based on route.
+
+This is exactly the children routes concept.
+
+2. Applayout Component
+const Applayout = () => {
+    return (
+    <div className="app">
+        <Header/>
+        <Outlet/>
+        <Footer/>
+    </div>
+    )
+};
+What happens here:
+<Header /> → Always visible
+<Footer /> → Always visible
+<Outlet /> → This is where child route components render
+Very Important Concept:
+
+Outlet is a placeholder where child routes will load.
+
+Think like:
+
+Header
+Outlet → Body/About/Contact
+Footer
+3. Router Configuration
+const appRouter = createBrowserRouter([
+    {
+    path: "/",
+    element: <Applayout/>,
+
+This means:
+
+When path starts with /
+Load Applayout
+Then load children inside <Outlet/>
+
+So Applayout is parent route.
+
+4. Children Routes
+children : [
+    {
+        path: "/",
+        element: <Body/>
+    },
+    {
+        path: "/about",
+        element: <About/>
+    },
+    {
+        path: "/contact",
+        element: <Contactus/>
+    }
+]
+
+These are child routes of /.
+
+Routing Result:
+
+| URL      | What renders              |
+| -------- | ------------------------- |
+| /        | Header + Body + Footer    |
+| /about   | Header + About + Footer   |
+| /contact | Header + Contact + Footer |
+
+So only Outlet content changes.
+
+5. Error Handling
+errorElement: <Error/>
+
+If any route fails or page not found → Error component loads.
+
+You added it both parent and child level — that is fine.
+
+6. Final Rendering
+const root = ReactDOM.createRoot(document.getElementById("root"))
+root.render(<RouterProvider router={appRouter} />);
+
+This connects router to React app.
+
+7. Flow Diagram (Very Important)
+RouterProvider
+      |
+createBrowserRouter
+      |
+      "/"  → Applayout
+              |
+              |--- Header
+              |--- Outlet
+              |       |--- Body ( / )
+              |       |--- About ( /about )
+              |       |--- Contact ( /contact )
+              |
+              |--- Footer
+8. Interview Explanation (Use this sentence)
+
+If interviewer asks Explain nested routing in your project:
+
+Say this:
+
+We implemented nested routing using React Router. We created a layout component that contains common components like Header and Footer, and used Outlet to render child routes like Home, About, and Contact. This ensures Header and Footer remain constant while only the body content changes based on the route.

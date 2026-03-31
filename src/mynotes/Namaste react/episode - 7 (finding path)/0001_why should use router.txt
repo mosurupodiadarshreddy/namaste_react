@@ -1,0 +1,186 @@
+in place of header component it gave login component thats it down body footer still there i uderstood that state changed in header component when i click login button so header compoenent re rendered and replaced but how to completely to login page we should use routing aa
+
+
+import React, { useState } from "react";
+import ReactDOM from "react-dom/client";
+import "./Header.css";
+import {HEADER_LOGO,HINDUPUR_LOGO} from "../utils/constants";
+import link from "react-dom";
+import Login from "./Login.js";
+
+const Header = () => {
+    // let btnName = "Login";
+    const [btnName,setBtnName]= useState("Login")
+
+    return btnName == "Logout" ? <Login/> : (
+        <div className="header">
+            <div className="logo-container">
+                <img className="logo" src={HEADER_LOGO}/>
+            </div>
+            <div className="heading">
+                <h1>Hindupur Restaurants</h1>
+            </div>
+            <div className="hindupur-logo">
+                <img className="hindupur-img-logo" src={HINDUPUR_LOGO}/>
+            </div>
+            <div className="nav-items">
+                <ul>
+                   <button className="loginbutton" onClick={()=> {
+                    btnName === "Login" ?
+                        setBtnName("Logout") : setBtnName("Login");
+                   }}>{btnName}</button>
+                    <li>About</li>
+                    <li>contact</li>
+                    <li>Email</li>
+                    <li>Cart</li>
+                    <li>Home</li>   
+                </ul>
+            </div>
+        </div>
+    )
+}
+
+export default Header;
+
+
+Yep—you’ve got the core idea right. What you’re seeing happens because you’re conditionally replacing only the Header component, not the whole page. Let’s walk through it.
+
+What’s happening in your current setup
+
+Imagine your main layout looks like this (in App.js or similar):
+
+<App>
+  <Header />
+  <Body />
+  <Footer />
+</App>
+
+When you click Login, inside Header you do:
+
+return btnName == "Logout" ? <Login/> : ( ...header JSX... )
+
+So React does:
+
+Header component re-renders
+↓
+Header is replaced by Login component
+↓
+Body and Footer remain unchanged
+
+Visual result:
+
+[Login component]   ← replaced Header
+[Body]
+[Footer]
+
+That’s why the page looks like Login + Body + Footer.
+
+Why this happens
+
+React updates only the component whose state changed.
+
+Here the state is inside Header:
+
+Header state change
+↓
+Header re-render
+↓
+Only Header UI replaced
+
+React does not touch Body or Footer.
+
+How real apps solve this
+
+Yes—routing.
+
+Instead of replacing the Header component, you navigate to a new route/page.
+
+Typical structure:
+
+/           → Home page
+/login      → Login page
+/restaurants → Body page
+Example with React Router
+
+Install:
+
+npm install react-router-dom
+
+App structure:
+
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Header from "./Header";
+import Body from "./Body";
+import Login from "./Login";
+import Footer from "./Footer";
+
+function App(){
+  return (
+    <BrowserRouter>
+
+      <Header />
+
+      <Routes>
+        <Route path="/" element={<Body />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
+
+      <Footer />
+
+    </BrowserRouter>
+  )
+}
+Then in Header
+
+Instead of state switching:
+
+import { Link } from "react-router-dom";
+
+<Link to="/login">
+  <button>Login</button>
+</Link>
+
+Now when clicking Login:
+
+Click Login
+↓
+Route changes to /login
+↓
+Body component replaced with Login page
+
+Result:
+
+Header
+Login Page
+Footer
+
+OR if you want full login page without header/footer, you structure routes differently.
+
+Mental Model
+
+Think of routing like changing pages in a website:
+
+/home
+/login
+/cart
+/about
+
+React Router decides which component to render based on URL.
+
+Quick summary
+
+Your approach:
+
+Header state change
+↓
+Header replaced with Login
+↓
+Body/Footer remain
+
+Routing approach:
+
+URL change (/login)
+↓
+React Router loads Login page
+↓
+Whole page changes

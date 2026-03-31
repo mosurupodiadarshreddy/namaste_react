@@ -1,0 +1,358 @@
+my code unlogical code ::
+
+why this also not correct :
+import React, { useState } from "react";
+import ReactDOM from "react-dom/client";
+import Body from "./Body";
+import "./Login.css";
+
+const Login = () => {
+
+    const [name,setName] = useState("");
+    const [password,setPassword] = useState("");
+
+    return (
+        <div className="loginform">
+
+            <label>Username : </label>
+            <input type="text" id="username" value={name} onChange={(e)=> {setName(e.target.value)}}></input> 
+            <label>Password : </label>
+            <input type="text" id="password" value={password} onChange={(e) => {setPassword(e.target.value)}}></input>
+
+            <button onClick={submitlogin} id="submit-button">Submit</button>
+        </div>
+    )
+
+   
+    function submitlogin() {
+
+    console.log(name);
+    console.log(password);
+
+        if( name == "admin" && password == "admin" ){
+            return <Body/> 
+        }
+         else{
+            return ("invalid creds");
+         }   
+    }
+}
+
+export default Login;
+
+1️⃣ What Happens When You Click the Button
+
+Your button:
+
+<button onClick={submitlogin} id="submit-button">Submit</button>
+
+When clicked, React simply does:
+
+submitlogin();
+
+Inside that function you return:
+
+return <Body/>
+
+But React does nothing with that return value.
+
+So the flow is:
+
+Click button
+↓
+submitlogin() executes
+↓
+<Body/> returned
+↓
+React ignores it
+↓
+UI stays same
+
+Because React only renders what the component returns, not what event handlers return.
+
+2️⃣ Where React Actually Renders UI
+
+React renders only this part:
+
+return (
+   <div className="loginform">
+      ...
+   </div>
+)
+
+That is the render output of the component.
+
+React does not re-render UI from event handler returns.
+
+3️⃣ Why React Works This Way
+
+React updates UI only when:
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ state changes
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ props change
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ context changes
+
+So React flow is:
+
+Event
+↓
+State update
+↓
+Component re-renders
+↓
+New JSX returned
+↓
+DOM updated
+
+Your code has no state change, so React never re-renders.
+
+4️⃣ Correct Way (Use State)
+
+You must store login result in state.
+
+Example:
+
+const Login = () => {
+
+  const [name,setName] = useState("");
+  const [password,setPassword] = useState("");
+  const [isLoggedIn,setIsLoggedIn] = useState(false);
+  const [error,setError] = useState("");
+
+  function submitlogin(){
+    if(name === "admin" && password === "admin"){
+      setIsLoggedIn(true);
+    } else {
+      setError("Invalid credentials");
+    }
+  }
+
+  if(isLoggedIn){
+    return <Body/>
+  }
+
+  return (
+    <div className="loginform">
+
+      <label>Username :</label>
+      <input
+        type="text"
+        value={name}
+        onChange={(e)=>setName(e.target.value)}
+      />
+
+      <label>Password :</label>
+      <input
+        type="text"
+        value={password}
+        onChange={(e)=>setPassword(e.target.value)}
+      />
+
+      <button onClick={submitlogin}>Submit</button>
+
+      <p>{error}</p>
+
+    </div>
+  )
+}
+5️⃣ Now What Happens
+Click Submit
+↓
+submitlogin()
+↓
+setIsLoggedIn(true)
+↓
+state changes
+↓
+React re-renders component
+↓
+return <Body/>
+↓
+UI switches to Body component
+6️⃣ The Key Rule to Remember
+
+React UI changes only through state updates.
+
+Event handlers should:
+
+update state
+trigger side effects
+
+They should not return JSX expecting React to render it.
+
+7️⃣ Simple Way to Remember
+
+React rendering rule:
+
+UI = f(state)
+
+If state doesn't change → UI doesn't change.
+
+===========================================================================================
+why it not worked when i kept this logic below return statement :
+function submitlogin(){
+    if(name === "admin" && password === "admin"){
+      setIsLoggedIn(true);
+    } else {
+      setError("Invalid credentials");
+    }
+  }
+
+  if(isLoggedIn){
+    return <Body/>
+  }
+
+1️⃣ Your Situation
+
+You wrote something like this:
+
+const Login = () => {
+
+  const [name,setName] = useState("");
+  const [password,setPassword] = useState("");
+  const [isLoggedIn,setIsLoggedIn] = useState(false);
+  const [error,setError] = useState("");
+
+  return (
+    <div>
+      <button onClick={submitlogin}>Submit</button>
+    </div>
+  )
+
+  function submitlogin(){
+      if(name === "admin" && password === "admin"){
+        setIsLoggedIn(true);
+      } else {
+        setError("Invalid credentials");
+      }
+  }
+
+  if(isLoggedIn){
+      return <Body/>
+  }
+}
+
+And it didn't work.
+
+2️⃣ The Problem
+
+JavaScript stops executing the function after the first return.
+
+So this part runs:
+
+return (
+   <div>...</div>
+)
+
+And everything below it is ignored.
+
+Meaning this code is never executed:
+
+function submitlogin(){...}
+
+if(isLoggedIn){
+   return <Body/>
+}
+
+Because the function already returned.
+
+3️⃣ Think of It Like This
+
+JavaScript execution:
+
+Start component
+↓
+Hit return
+↓
+Function ends
+↓
+Anything below return is never executed
+
+So your component effectively becomes:
+
+const Login = () => {
+
+  return (
+    <div>
+      <button>Submit</button>
+    </div>
+  )
+
+}
+
+Everything after return is dead code.
+
+4️⃣ Correct Structure
+
+The condition must be before the return.
+
+function Login(){
+
+  const [isLoggedIn,setIsLoggedIn] = useState(false);
+
+  function submitlogin(){
+     setIsLoggedIn(true);
+  }
+
+  if(isLoggedIn){
+     return <Body/>
+  }
+
+  return (
+     <button onClick={submitlogin}>Submit</button>
+  )
+}
+
+Execution flow:
+
+Component runs
+↓
+Check isLoggedIn
+↓
+false → render login form
+↓
+Click button
+↓
+setIsLoggedIn(true)
+↓
+component re-renders
+↓
+isLoggedIn true
+↓
+return Body
+5️⃣ Important Rule
+
+In React components:
+
+Logic
+↓
+Conditional checks
+↓
+Return JSX (last)
+
+Never place logic after the return.
+
+6️⃣ Simple Pattern
+
+Most React components follow this structure:
+
+function Component(){
+
+  // state
+  // functions
+  // conditions
+
+  if(condition){
+     return <Something/>
+  }
+
+  return <MainUI/>
+}
+
+✅ Short answer
+
+Your code didn’t work because JavaScript stops executing the component after the first return statement, so the logic written below it never runs.
+
+
+
+

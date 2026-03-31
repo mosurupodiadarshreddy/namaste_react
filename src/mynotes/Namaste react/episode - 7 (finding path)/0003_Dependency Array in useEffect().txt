@@ -1,0 +1,129 @@
+useEffect hook ::: 
+
+1)how useEffect comes from ?
+1A)so we know that it comes from react library we import it and useEffect is called using two arguments 1st one is arrow function as callback function and second is dependency array 
+
+
+2) when is useEffect is called??
+2A)useEffect runs after React renders the component and updates the DOM.
+
+React flow:
+
+Render component
+↓
+Update DOM
+↓
+Run useEffect
+
+So useEffect always runs after rendering, not during rendering. this is what we know right  
+for example every time my header component rendered my useEffect will be called 
+
+2)what is this dependency array ?? how it changes calling of useEffect ??????? 🫡🫡
+2A)the dependency array changes the behaviour of render shocking right 😲😲😲😲
+
+Dependency array is not mandatory by the way  only callback function is mandatory ⭐⭐⭐
+
+1️⃣useEffect with out dependency array::
+
+ useEffect(() => {
+	console.log("useeffect called");
+});
+
+Definition : useEffect without a dependency array runs after every render of the component.When useEffect is used without a dependency array, it runs after every render of the component, including the initial render and all subsequent re-renders.
+
+This means: It runs after the initial render It runs after every re-render
+
+for example we have header component and when app opens header component renders and useEffect also called and if I click some logout button or about button or something then what happens header component re-renders along with it again useEffect is called so it means for every render of header component it also calls and re-runs not only at initial 
+===========================================================================================
+2️⃣useEffect with empty dependency array::
+
+useEffect (() => {
+	console.log("useeffect called");
+},[])
+
+Definition
+
+useEffect with an empty dependency array runs only once after the initial render of the component.It will not run again on re-renders.When useEffect has an empty dependency array, it runs only once after the initial render of the component and does not run again on subsequent re-renders.
+===========================================================================================
+
+3️⃣ useEffect with Dependency Array (with values)
+Definition
+
+When useEffect has a dependency array with variables, it runs after the initial render and runs again whenever any dependency value changes.
+
+Example
+import React, { useState, useEffect } from "react";
+
+function Header() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    console.log("useEffect called because count changed");
+  }, [count]);
+
+  console.log("Header rendered");
+
+  return (
+    <div>
+      <h1>Header Component</h1>
+      <p>{count}</p>
+      <button onClick={() => setCount(count + 1)}>Increase</button>
+    </div>
+  );
+}
+
+export default Header;
+What Happens Step-by-Step
+1️⃣ Initial Render
+
+Component loads.
+
+Console output:
+
+Header rendered
+useEffect called because count changed
+
+Flow:
+
+Component render
+↓
+DOM updated
+↓
+useEffect runs
+2️⃣ Click Button
+setCount(count + 1);
+
+Now count changes.
+
+Console output:
+
+Header rendered
+useEffect called because count changed
+
+Because dependency count changed.
+
+3️⃣ If Some Other State Changes
+
+If another state changes but count stays same, then: 
+
+Header rendered useEffect will NOT run.
+
+Final Behavior
+Initial render → useEffect runs
+Dependency value changes → useEffect runs again
+Dependency unchanged → useEffect does NOT run
+Short Interview Definition
+
+When useEffect has dependencies in its dependency array, it runs after the initial render and re-runs whenever any dependency value changes.
+===========================================================================================
+✅ Quick summary of all 3 cases
+
+| Case                         | Behavior                                                  |
+| ---------------------------- | --------------------------------------------------------- |
+| `useEffect(()=>{})`          | Runs after every render                                   |
+| `useEffect(()=>{}, [])`      | Runs once after initial render                            |
+| `useEffect(()=>{}, [value])` | Runs after initial render and whenever dependency changes |
+
+===========================================================================================
+
+⭐⭐⭐⭐never use usestate variables outside component 

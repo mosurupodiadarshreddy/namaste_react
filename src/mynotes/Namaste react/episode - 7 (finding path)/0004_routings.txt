@@ -1,0 +1,70 @@
+when ever u see keyword with use means it is hook ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐s
+
+
+How we can create different routes in our application ::
+
+For that we will introduce the java-script library called (react-router-dom)
+
+How to install react router to our application (npm install react-router-dom)
+
+first for creating routings we should go to the root level component it is app.js right our starting component over here ::
+
+
+1)we need to make here routing configuration for that that we will import the {createBrowserRouter} from react-router-dom library as react suggests this to use instead other other methods so by using this we should make configuration setup 
+
+const approuter = createBrowserHistory([
+	{
+		path: "/",
+		element: <Applayout/>,
+	},
+
+	{
+		path: "/about",
+		element: <about/>,
+	},
+
+
+]);
+
+now we created the configuration now we should give this configuration to react application for renderings right to provide that we use one more method from router library is 
+
+{ RouterProvider }
+
+so now where we need to provide it to render based on configuration we wrote is render ::
+import React from "react";
+import ReactDOM from "react-dom/client";
+import Header from "./src/components/Header";
+import Footer from "./src/components/Footer";
+import Body from "./src/components/Body";
+import Login from "./src/components/Login";
+import About from "./src/components/About";
+import { createBrowserRouter,RouterProvider } from "react-router-dom";
+
+const Applayout = () => {
+    return (
+    <div className="app">
+        {/* <Header/>
+        <Body/>
+        <Footer/> */}
+        <Login/>
+    </div>
+    )
+};
+
+const appRouter = createBrowserRouter([
+    {
+        path: "/",
+        element: <Applayout/>,
+    },
+    {
+        path: "/about",
+        element: <About/>
+    }
+])
+
+const root = ReactDOM.createRoot(document.getElementById("root"))
+root.render(<RouterProvider router={appRouter} />);
+
+===========================================================================================
+
+

@@ -1,0 +1,153 @@
+What errorElement Does
+
+errorElement tells React Router:
+
+If something goes wrong while loading this route, show this component instead.
+
+Example from your code:
+
+{
+  path: "/",
+  element: <Applayout/>,
+  errorElement: <Error/>
+}
+
+Meaning:
+
+User opens "/"
+↓
+Applayout should render
+↓
+If Applayout throws an error OR route fails
+↓
+React Router shows <Error/>
+Your Error Component
+const Error = () => {
+    return (
+        <div>
+            Oops ! something went wrong ....
+        </div>
+    )
+}
+
+This is simply the fallback UI when routing fails.
+
+Example Scenario
+
+User opens:
+
+/about
+
+Router tries:
+
+element: <About/>
+
+If an error occurs while rendering About:
+
+React Router stops normal rendering
+↓
+errorElement renders
+↓
+<Error />
+
+User sees:
+
+Oops ! something went wrong ....
+Another Case
+
+If user opens a route that doesn't exist:
+
+/randompage
+
+Router cannot match a route → error boundary triggers → errorElement shows.
+
+Simple Definition
+
+errorElement in React Router is used to display a fallback UI when a route fails to render or an error occurs during routing.
+
+Your Code Is Correct
+
+Your router:
+
+const appRouter = createBrowserRouter([
+    {
+        path: "/",
+        element: <Applayout/>,
+        errorElement: <Error/>
+    },
+    {
+        path: "/about",
+        element: <About/>,
+        errorElement: <Error/>
+    },
+    {
+        path: "/contact",
+        element: <Contactus/>
+    }
+])
+
+Here:
+
+/ → if error → Error
+
+/about → if error → Error
+
+/contact → no error handler
+
+==========================================================================================
+What useRouteError() Is
+
+useRouteError() is a React Router hook that lets you access the error that occurred during routing.
+
+So when a route fails, React Router sends the error object to the errorElement, and you can read it using this hook.
+
+Your Code Explained
+import { useRouteError } from "react-router-dom";
+
+This imports the hook.
+
+const error = useRouteError()
+
+This gets the error object that React Router caught.
+
+Example error object:
+
+{
+  status: 404,
+  statusText: "Not Found"
+}
+Then You Display It
+{error.status} {error.statusText}
+
+So if user opens:
+
+/randompage
+
+Output will be:
+
+Oops! something went wrong ....
+404 Not Found
+Flow of Error Handling
+User opens wrong route
+↓
+React Router cannot find route
+↓
+errorElement is rendered
+↓
+useRouteError() gets error info
+↓
+Error component shows error message
+Without useRouteError()
+
+Your error page would just show:
+
+Oops! something went wrong
+
+No details.
+
+With useRouteError()
+
+It shows actual router error info like:
+
+404 Not Found
+500 Internal Server Error

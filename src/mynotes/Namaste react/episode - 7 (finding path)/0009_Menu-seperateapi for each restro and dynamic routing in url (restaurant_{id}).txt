@@ -1,0 +1,250 @@
+step1 :::::::now we are going to build is /restaurant/{id} dynamic routing pls be ready its very intresting 
+
+2)lets create restro menu component first 
+
+3)after that in path configuration we will add like this 
+
+{
+            path: "/restaurant/:resId",
+            element: <Restaurant/>
+            }
+
+that :resId makes dynamic path 
+
+1. What is Dynamic Routing?
+
+Dynamic routing means:
+The URL contains a variable value (like id), and based on that value we load different data.
+
+Example URLs:
+/restaurant/101
+/restaurant/102
+/restaurant/205
+
+Here 101, 102, 205 are dynamic values → restaurant IDs.
+
+2. Route Configuration
+You wrote:
+{
+  path: "/restaurant/:resId",
+  element: <Restaurant/>
+}
+What is :resId?
+The : means dynamic parameter.
+
+So React Router understands:
+Whatever comes after /restaurant/ will be stored in a variable called resId.
+
+-------------------------------------------------------------------------------------------
+step 2 :::::  so now we make important step in restaurant menu we make api call like get restaurant menu with id will call that api collect data and display it 
+
+1. Imports
+import { useEffect, useState } from "react";
+import Shimmer from "./Shimmer";
+import { Link } from "react-router-dom";
+What these are:
+| Import    | Purpose                       |
+| --------- | ----------------------------- |
+| useState  | Store API data                |
+| useEffect | Call API when component loads |
+| Shimmer   | Loading UI                    |
+| Link      | Navigate back to home         |
+
+2. State Variable
+const [menuData, setMenuData] = useState(null);
+Meaning:
+menuData → stores product/menu data from API
+setMenuData → updates state
+Initial value = null because data not loaded yet
+
+Flow:
+
+Initial render → menuData = null
+After API → menuData = product object
+Component re-renders
+3. useEffect
+useEffect(() => {
+  fetchMenu();
+}, []);
+Important concept:
+
+This means:
+
+Call fetchMenu() only once when component loads.
+
+Because dependency array is empty [].
+
+Flow:
+
+Component loads
+   ↓
+useEffect runs
+   ↓
+fetchMenu()
+   ↓
+API call
+   ↓
+setMenuData()
+   ↓
+Component re-renders
+4. Fetch Function
+const fetchMenu = async () => {
+  const data = await fetch("https://dummyjson.com/products/" + 1);
+  const json = await data.json();
+  console.log(json);
+  setMenuData(json);
+};
+Step by step:
+fetch() → get response
+await data.json() → convert response to JSON
+setMenuData(json) → store in state
+React re-renders component
+
+So now:
+
+menuData = {
+  id: 1,
+  title: "...",
+  price: ...,
+  rating: ...
+}
+5. Conditional Rendering (Very Important)
+if (!menuData) return <Shimmer />;
+
+This means:
+
+If menuData is null → show loading shimmer
+Else → show menu page
+
+Render flow:
+
+First render → menuData null → Shimmer
+After API → menuData has data → Show menu
+
+This is called:
+
+Conditional Rendering
+6. JSX Return (UI)
+return (
+  <div className="menu">
+    <Link to="/"><button>Back</button></Link>
+    <h1>{menuData.title}</h1>
+    <h2>Category: {menuData.category}</h2>
+    <img src={menuData.thumbnail} width="500" />
+    <h3>Price: ₹ {menuData.price}</h3>
+    <h3>Rating: ⭐ {menuData.rating}</h3>
+    <h3>Brand: {menuData.brand}</h3>
+    <h3>Description:</h3>
+    <p>{menuData.description}</p>
+  </div>
+);
+
+This displays product details from API.
+
+Data binding examples:
+| JSX                    | Data         |
+| ---------------------- | ------------ |
+| {menuData.title}       | Product name |
+| {menuData.price}       | Price        |
+| {menuData.rating}      | Rating       |
+| {menuData.brand}       | Brand        |
+| {menuData.description} | Description  |
+
+
+7. Full Flow of This Component
+
+Very important to understand this flow:
+
+Component Loads
+      ↓
+menuData = null
+      ↓
+useEffect runs
+      ↓
+fetchMenu()
+      ↓
+API call
+      ↓
+setMenuData(json)
+      ↓
+State updated
+      ↓
+Component re-render
+      ↓
+UI shows product details
+8. This Pattern Is Used Everywhere
+
+This exact pattern is used in:
+
+| Website   | Example              |
+| --------- | -------------------- |
+| Amazon    | Product details page |
+| Swiggy    | Restaurant menu page |
+| Netflix   | Movie details page   |
+| YouTube   | Video page           |
+| Instagram | Profile page         |
+
+Pattern name:
+
+Detail Page Data Fetch Pattern
+9. Later When You Add useParams
+
+You will change this:
+
+"https://dummyjson.com/products/" + 1
+
+to:
+
+"https://dummyjson.com/products/" + id
+
+And add:
+
+const { id } = useParams();
+
+Then flow becomes:
+
+Click Product Card
+      ↓
+/restaurant/5
+      ↓
+useParams() → id = 5
+      ↓
+Fetch product 5
+      ↓
+Show details
+
+This is called:
+
+Dynamic Routing + Fetch by ID
+
+10. Summary of Concepts Used in This Component
+| Concept                  | Where            |
+| ------------------------ | ---------------- |
+| useState                 | Store API data   |
+| useEffect                | Call API on load |
+| Fetch API                | Get data         |
+| Async/Await              | Handle API       |
+| Conditional Rendering    | Shimmer          |
+| React Router Link        | Back button      |
+| State Update → Re-render | setMenuData      |
+| Detail Page Pattern      | Whole component  |
+
+One Important Line to Remember
+
+This pattern is very common in React:
+
+useEffect(() => {
+  fetchData();
+}, []);
+
+This means:
+
+When component loads, fetch data and render it.
+
+
+
+
+
+
+
+

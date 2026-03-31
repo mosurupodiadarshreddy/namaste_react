@@ -1,0 +1,62 @@
+useParams Hook – Definition
+
+useParams is a hook provided by React Router that is used to access URL parameters (route parameters) inside a component.
+
+It is mainly used when we have dynamic routes like /restaurant/:id, /user/:userId, etc.
+
+So, useParams allows us to read the values from the URL.
+
+Syntax
+import { useParams } from "react-router-dom";
+
+const ComponentName = () => {
+  const params = useParams();
+
+  return (
+    <div>
+      <h1>ID: {params.id}</h1>
+    </div>
+  );
+};
+
+Destructuring Syntax (Most Common)
+import { useParams } from "react-router-dom";
+
+const ComponentName = () => {
+  const { id } = useParams();
+
+  return <h1>ID: {id}</h1>;
+};
+Example with Route
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import RestaurantMenu from "./RestaurantMenu";
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/restaurant/:id" element={<RestaurantMenu />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+If URL is:
+
+/restaurant/123
+
+Then inside component:
+
+const { id } = useParams();
+
+id = 123
+
+Short Definition for Interview
+
+You can say like this:
+
+useParams is a React Router hook used to access dynamic URL parameters from the route. It returns an object containing key-value pairs of the URL parameters, which can be used inside functional components.
+
+
+
+===========================================================================================
