@@ -7,17 +7,17 @@
     padding: 2px;
     margin: 5px;
     border-radius: 10px;
-    border-top: 3px solid green;
-    border-bottom: 1px solid green;
+    border-top: 3px solid rgb(228, 111, 68);
+    border-bottom: 1px solid rgb(228, 111, 68);
 }
 
 .restaurant-card:hover{
     border: 1px solid rgb(109, 109, 110);
     cursor: pointer;
-    border-left: 3px solid green;
-    border-right: 3px solid green;
-    border-bottom: 1px solid green;
-    border-top: 1px solid green;
+    border-left: 3px solid rgb(228, 111, 68);
+    border-right: 3px solid rgb(228, 111, 68);
+    border-bottom: 1px solid rgb(228, 111, 68);
+    border-top: 1px solid rgb(228, 111, 68);
 }
 .restaurantcard-logo{
     height: 120px;

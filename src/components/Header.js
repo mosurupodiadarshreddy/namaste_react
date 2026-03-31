@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
 import "./Header.css";
 import {HEADER_LOGO,HINDUPUR_LOGO} from "../utils/constants";
-import link from "react-dom";
+import { Link } from "react-router-dom";
 
 const Header = () => {
     // let btnName = "Login";
@@ -24,11 +24,11 @@ const Header = () => {
                     btnName === "Login" ?
                         setBtnName("Logout") : setBtnName("Login");
                    }}>{btnName}</button>
-                    <li>About</li>
-                    <li>contact</li>
-                    <li>Email</li>
-                    <li>Cart</li>
-                    <li>Home</li>   
+                    <li><Link to="/about"> About </Link></li>
+                    <li><Link to="/contact">Contactus</Link></li>
+                    <li><Link to="/email">Email</Link></li>
+                    <li><Link to="/cart">Cart</Link></li>
+                    <li><Link to="/"> Home </Link></li>   
                 </ul>
             </div>
         </div>
