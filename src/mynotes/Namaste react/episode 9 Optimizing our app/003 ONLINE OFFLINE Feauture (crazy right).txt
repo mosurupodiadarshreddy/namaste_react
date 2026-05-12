@@ -1,0 +1,94 @@
+🔹 1. What your custom hook is doing
+const useOnlineStatus = () => {
+  const [onlineStatus, setOnlineStatus] = useState(true);
+
+  useEffect(() => {
+    window.addEventListener("online", () => {
+      setOnlineStatus(true);
+    });
+
+    window.addEventListener("offline", () => {
+      setOnlineStatus(false);
+    });
+  }, []);
+
+  return onlineStatus;
+};
+👉 Purpose:
+
+Track whether the user is online or offline and return a boolean
+
+🔹 2. What is window here?
+
+window is the global browser object (from JavaScript environment)
+
+👉 It has built-in events like:
+
+"online"
+"offline"
+🔹 3. How event listeners work (core concept)
+window.addEventListener("online", callback);
+
+👉 This means:
+
+“Hey browser, whenever this event happens, run this function”
+
+🔥 What happens in background?
+
+Browser internally has an event system (event loop):
+
+Flow:
+Your code runs → listener is registered
+Browser keeps listening in background
+Internet goes OFF
+Browser fires "offline" event
+Your callback runs instantly
+🧠 Important:
+
+You are NOT checking continuously ❌
+Browser is notifying you automatically ✅
+
+🔹 4. How state updates instantly?
+
+When this runs:
+
+setOnlineStatus(false);
+
+👉 React does:
+
+Updates state
+Triggers re-render
+Component using this hook runs again
+🔹 5. Now connect to your Body component
+const onlineStatus = useOnlineStatus();
+
+👉 This means:
+
+Body is subscribed to online/offline changes
+🔥 When internet goes OFF:
+Browser fires "offline"
+Hook runs → setOnlineStatus(false)
+React re-renders Body
+This condition runs:
+if (onlineStatus === false) {
+  return <div>🔴 Sorry Dude you are offline</div>;
+}
+
+👉 UI updates instantly ⚡
+
+🔥 When internet comes back:
+"online" event fires
+setOnlineStatus(true)
+Re-render happens
+Full UI comes back
+🔹 6. Why it feels “instant”?
+
+Because:
+
+Browser events are event-driven (not polling)
+React state updates are fast + optimized
+
+
+🔹 When do "online" / "offline" events actually fire?
+
+They fire ONLY when network status changes:

@@ -1,9 +1,9 @@
 import React from "react";
-import "./Body.css";
 import { useState, useEffect } from "react";
 import Restaurantcard from "./Restaurantcard";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
+import useOnlineStatus from "../utils/useOnlineStatus";
 
 const Body = () => {
   const [ListofRestros, setListofRestros] = useState([]);
@@ -18,7 +18,10 @@ const Body = () => {
 
   const fetchData = async () => {
     try {
-      const data = await fetch("https://dummyjson.com/products");
+      const data = await fetch("https://dummyjson.com/products/category/kitchen-accessories");
+      // const data = await fetch("https://dummyjson.com/products/category/groceries");
+      // const data = await fetch("https://dummyjson.com/products/category/smartphones?limit=50");
+
       const json = await data.json();
 
       const restrodata = json?.products || [];
@@ -30,6 +33,16 @@ const Body = () => {
       console.log(error);
     }
   };
+
+ const onlineStatus = useOnlineStatus();
+
+ if(onlineStatus === false){
+  return (
+    <div>
+       🔴 Sorry Dude you are offline 😲 !! Please connect to the internet 😀
+    </div>
+  )
+ }
 
   return ListofRestros.length === 0 ? (
     <Shimmer />

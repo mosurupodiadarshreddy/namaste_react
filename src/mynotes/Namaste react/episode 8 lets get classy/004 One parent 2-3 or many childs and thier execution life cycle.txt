@@ -1,0 +1,194 @@
+
+import React from "react";
+// import User from "./User.js"
+import Userclass from "./Userclass.js";
+
+class About extends React.Component{
+    constructor(props){
+        super(props);
+        console.log("parent constructor");
+    }
+
+    componentDidMount (){
+    console.log(" parent  did mount");
+    }
+
+    render(){
+        console.log("parent render");
+        return(
+        <div>
+        <Userclass name={"adarsh reddy child 1 "}/>
+                <Userclass name={"adarsh reddy child 2 "}/>
+
+        </div>
+        )
+    }
+}
+
+export default About;
+
+
+import React from "react";
+
+class Userclass extends React.Component{
+
+constructor(props){
+    super(props);
+
+    this.state = {
+        count : 0,
+        count1 : 0,
+    };
+    console.log(this.props.name + "child constructor");
+
+}
+
+componentDidMount (){
+    console.log(this.props.name + " child did mount");
+}
+
+render(){
+    const {name} = this.props;
+    const {count,count1} = this.state;
+    console.log(this.props.name + "child render");
+
+    return(
+        <div className="usercard">
+            <h1> Name : {name}</h1>
+            <h2>Location : Hindupur</h2>
+            <h3>Contact : 9100244598</h3>
+              <h1>Count : {count}</h1>
+            <h1>Count1 : {count1}</h1>
+            <button onClick={()=>{
+                //dont update state varibales directly
+                this.setState({
+                    count : this.state.count + 1,
+                })
+            }}>count</button>
+
+          
+        </div>
+    )
+}
+
+}
+
+export default Userclass;
+
+
+Good—this is a very important observation 👏
+Your expectation vs actual output difference is exactly where real understanding comes.
+Let’s break it clearly with reasoning.
+
+📊 Your EXPECTED order (what you thought)
+parent constructorparent renderchild1 constructorchild1 renderchild1 didMountchild2 constructorchild2 renderchild2 didMountparent didMount
+👉 You expected each child to fully complete before next starts
+
+📊 ACTUAL OUTPUT (what React did)
+parent constructorparent renderchild1 constructorchild1 renderchild2 constructorchild2 renderchild1 didMountchild2 didMountparent didMount
+
+🔥 KEY DIFFERENCE
+👉 React is doing:
+1️⃣ Render phase (top → down)it will batch up all renders of childs 
+2️⃣ Commit phase (bottom → up) it will batch all didmount of childs 
+
+🧠 Step-by-step REAL FLOW
+
+🔹 STEP 1: Parent starts
+parent constructorparent render
+
+🔹 STEP 2: React sees 2 children
+<Userclass name="child 1" /><Userclass name="child 2" />
+👉 Now React processes BOTH children in render phase
+
+🔹 STEP 3: Render phase (TOP → DOWN)
+child1 constructorchild1 renderchild2 constructorchild2 render
+👉 IMPORTANT:
+❗ React does NOT mount child1 immediately
+❗ It finishes rendering ALL children first
+
+🔥 WHY?
+Because React works in two phases
+
+📦 PHASE 1: Render Phase
+👉 Only prepares UI (virtual DOM)
+
+
+constructor
+
+
+render
+
+
+👉 NO DOM updates yet
+👉 NO componentDidMount yet
+
+📦 PHASE 2: Commit Phase
+👉 Now React applies changes to real DOM
+Then calls:
+componentDidMount
+
+🔹 STEP 4: Commit phase (BOTTOM → UP)
+child1 didMountchild2 didMountparent didMount
+
+🧠 Why this order?
+👉 Because React first builds the entire tree
+Parent ├── Child1 └── Child2
+Then mounts from bottom to top
+
+🔥 FINAL UNDERSTANDING
+Render Phase:
+Parent → Child1 → Child2
+Commit Phase:
+Child1 → Child2 → Parent
+
+⚡ Simple Rule (VERY IMPORTANT)
+👉 Render = top → down
+👉 DidMount = bottom → up
+
+❗ Why your expectation was wrong
+You assumed:
+child1 full lifecycle → then child2
+But React does:
+ALL render first → THEN ALL mount
+
+🧠 Simple analogy
+👉 Think like building a house:
+
+
+Draw full blueprint (render phase)
+
+
+Then build everything (commit phase)
+
+
+Not:
+❌ build room1 fully → then room2
+
+📌 About the diagram you shared
+That diagram shows:
+
+
+Render phase (top section)
+
+
+Commit phase (bottom section)
+
+
+👉 You misunderstood it as per component flow
+👉 But it is actually whole tree flow
+
+🔥 One-line takeaway
+👉 React does not finish one child completely before moving to next
+👉 It finishes rendering all components first, then runs componentDidMount
+
+⚡ Interview-level understanding
+👉 Why React does this?
+
+
+Performance optimization
+
+Batch updates ⭐⭐⭐⭐⭐⭐⭐
+
+Avoid unnecessary DOM operations
+

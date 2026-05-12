@@ -2,23 +2,13 @@ import { useEffect, useState } from "react";
 import Shimmer from "./Shimmer";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
+import useProductMenu from "../utils/useProductMenu";
 
 const RestaurantMenu = () => {
   const { id } = useParams();
-  const [menuData, setMenuData] = useState(null);
-
-  useEffect(() => {
-    fetchMenu();
-  }, []);
-
-  const fetchMenu = async () => {
-    const data = await fetch(
-      "https://dummyjson.com/products/" + id
-    );
-    const json = await data.json();
-    console.log(json);
-    setMenuData(json);
-  };
+  
+  //custom hook
+  const menuData = useProductMenu(id);
 
   if (!menuData) return <Shimmer/>;
 

@@ -1,0 +1,248 @@
+🔄️🔃Life cycle of Class based components 
+
+🔄 Class Component Lifecycle (Simple Definition)
+
+👉 Lifecycle =
+
+Steps React follows from creating a component → showing it → updating it → removing it
+
+📦 3 Main Phases
+Mounting (first time showing on UI)
+Updating (when state/props change)
+Unmounting (removing from UI)
+🔥 Now YOUR CODE FLOW (Parent → Child)
+
+We’ll track this:
+
+Parent → About
+Child → Userclass
+
+🚀 MOUNTING FLOW (VERY IMPORTANT)
+
+When React loads <About />, this happens:
+
+🔹 STEP 1: Parent instance created
+
+👉 React creates object of About
+
+🔹 STEP 2: Parent constructor runs
+constructor(props){
+    super(props);
+    console.log("parent constructor");
+}
+
+✅ Output:
+
+parent constructor
+🔹 STEP 3: Parent render runs
+render(){
+    console.log("parent render");
+}
+
+✅ Output:
+
+parent render
+
+👉 Now React sees inside render:
+
+<Userclass name="adarsh reddy class" />
+🔥 Now CHILD starts
+🔹 STEP 4: Child instance created
+
+👉 React creates object of Userclass
+
+🔹 STEP 5: Child constructor runs
+console.log("child constructor");
+
+✅ Output:
+
+child constructor
+🔹 STEP 6: Child render runs
+console.log("child render");
+
+👉 (You wrote "parent render" by mistake in child 😄)
+
+Fix it:
+
+console.log("child render");
+
+✅ Output:
+
+child render
+🔹 STEP 7: UI is shown (Mounted)
+
+👉 Now React puts everything on screen
+
+🧾 FINAL CONSOLE ORDER
+parent constructor
+parent render
+child constructor
+child render
+🧠 Simple Visualization
+About (Parent)
+   ↓
+render()
+   ↓
+Userclass (Child)
+🔥 Key Understanding
+
+👉 Parent always starts first
+👉 Then child is processed
+
+📌 What is "Mounting"?
+
+👉 Mounting means:
+
+Component is created + rendered + shown on UI
+
+🔹 Full Mounting Lifecycle Methods (for knowledge)
+
+Order:
+
+constructor()
+render()
+componentDidMount() ✅ (important)
+Example:
+componentDidMount(){
+    console.log("mounted");
+}
+
+👉 Runs AFTER UI is shown
+
+🔁 What happens on button click?
+this.setState({
+    count: this.state.count + 1
+});
+
+👉 This triggers Updating phase
+
+Updating flow
+render() runs again
+UI updates
+
+👉 Constructor does NOT run again ❗
+
+🧠 Final Simple Summary
+React creates parent → runs constructor → render
+Then child → constructor → render
+Then UI shows (mount)
+On state change → only render runs again
+⚡ One-line memory
+
+👉 Mounting = constructor → render → UI display
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+QUESTION :: what is object creation React creates object of About so when ever react sees component either functional or class it creates object where and then execution and rendered on ui not about functional or class generic question ??
+
+ANSWER::: 🧠 What is “object creation” here?
+
+👉 In JavaScript:
+
+Class → blueprint
+Object → actual working instance
+
+Example:
+
+class Car {}
+
+👉 This is just a design (no real car yet)
+
+const c1 = new Car();
+
+👉 Now a real object is created
+
+🔥 In React (simple understanding)
+
+When React sees a component like:
+
+<About />
+
+👉 React needs something to execute and render UI
+
+🔹 For CLASS components
+class About extends React.Component {}
+
+👉 React internally does something like:
+
+new About(props)
+
+👉 That means:
+
+Object (instance) is created
+Then constructor() runs
+Then render() runs
+🔹 For FUNCTIONAL components
+const About = () => {}
+
+👉 No object is created ❗
+
+👉 React simply calls the function
+
+About(props)
+📌 So answer to your question (generic)
+
+👉 When React sees a component:
+
+✅ Class Component
+Creates an object (instance) using new
+Then runs lifecycle methods
+✅ Functional Component
+Just calls the function
+No object, no this
+🧠 Where is this object created?
+
+👉 Not in your code
+👉 React does it internally (behind the scenes)
+
+You never write:
+
+new About()
+
+React handles it for you.
+
+🔁 Full flow (generic)
+
+When React sees:
+
+<App />
+Case 1: Functional
+Call function → return JSX → show UI
+Case 2: Class
+Create object → constructor() → render() → show UI
+🔥 Why object needed in class?
+
+Because class uses:
+
+this.props
+this.state
+lifecycle methods
+
+👉 All these need an instance (object)
+
+⚡ Why functional doesn’t need object?
+
+Because:
+
+No this
+No class
+Just a function
+
+👉 Simpler → React just executes it
+
+🧠 One-line understanding
+
+👉 Class → React creates object
+👉 Function → React calls function
+
+🔥 Real-life analogy
+Class component = machine blueprint → build machine → use it
+Functional component = just run a function → get output
+⚡ Important interview point
+
+👉 “Does React create object for functional components?”
+
+❌ No
+✅ Only for class components
+

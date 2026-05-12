@@ -1,0 +1,341 @@
+import React from "react";
+// import User from "./User.js"
+import Userclass from "./Userclass.js";
+
+class About extends React.Component{
+    constructor(props){
+        super(props);
+        console.log("parent constructor");
+    }
+
+    componentDidMount (){
+    console.log(" parent  did mount");
+    }
+
+    render(){
+        console.log("parent render");
+        return(
+        <div>
+        <Userclass name={"adarsh reddy child 1 "}/>
+                {/* <Userclass name={"adarsh reddy child 2 "}/> */}
+
+        </div>
+        )
+    }
+}
+
+export default About;
+
+
+
+import React from "react";
+
+class Userclass extends React.Component{
+
+constructor(props){
+    super(props);
+
+    this.state = {
+        count : 0,
+        count1 : 0,
+        userInfo : {}
+    };
+    console.log(this.props.name + "child constructor");
+
+}
+
+async componentDidMount (){
+const data = await fetch("https://api.github.com/users/mosurupodiadarshreddy");
+let json = await data.json();
+
+console.log(json);
+            this.setState({
+                    userInfo : json
+            })
+    console.log(this.props.name + " child did mount");
+}
+
+render(){
+    const { name , location, avatar_url} = this.state.userInfo || {};
+    // const {count,count1} = this.state;
+    console.log(this.props.name + "child render");
+
+    return(
+        <div className="usercard">
+            <h1> Name : {name}</h1>
+            <h2>Location : {location}</h2>
+            <h3>Contact : 9100244598</h3>
+
+            <img src={avatar_url}></img>
+              {/* <h1>Count : {count}</h1>
+            <h1>Count1 : {count1}</h1>
+            <button onClick={()=>{
+                //dont update state varibales directly
+                this.setState({
+                    count : this.state.count + 1,
+                })
+            }}>count</button> */}
+
+          
+        </div>
+    )
+}
+
+}
+
+export default Userclass;
+
+
+
+Good—now you’re seeing the real lifecycle with API + re-render, which is the most important part 👍
+Let’s walk through exactly what happens step by step in your code.
+
+🔄 Your Scenario (What you did)
+Parent → <About />
+Child → <Userclass />
+API call inside componentDidMount
+Initial state → {}
+🚀 FULL LIFECYCLE FLOW (VERY CLEAR)
+🔹 STEP 1: Parent starts
+parent constructor
+parent render
+
+👉 Parent is created and rendered
+
+🔹 STEP 2: Child starts (first time)
+child constructor
+child render
+
+👉 At this time:
+
+this.state.userInfo = {}
+
+So:
+
+const { name, location, avatar_url } = {}
+
+👉 All values = undefined
+
+🔹 STEP 3: UI shows (first render)
+
+👉 Screen shows:
+
+Name: (empty)
+Location: (empty)
+Image: broken/empty
+
+👉 This is initial render
+
+🔹 STEP 4: Mount phase starts
+child did mount
+parent did mount
+🔹 STEP 5: API call happens (inside child)
+componentDidMount() {
+   fetch(...)
+}
+
+👉 This is async, so React does NOT wait
+
+🔹 STEP 6: API response comes (after few ms)
+this.setState({
+   userInfo: json
+})
+
+👉 Now state updates
+
+🔥 IMPORTANT POINT
+
+👉 setState() triggers re-render
+
+🔹 STEP 7: Re-render happens
+child render
+
+👉 Now:
+
+this.state.userInfo = {
+   name: "adarsh",
+   location: "...",
+   avatar_url: "..."
+}
+🔹 STEP 8: UI updates
+
+👉 Now screen shows:
+
+Name ✅
+Location ✅
+Image ✅
+🧠 COMPLETE FLOW (SHORT)
+1. Parent constructor
+2. Parent render
+
+3. Child constructor
+4. Child render (empty data)
+
+5. UI shown
+
+6. componentDidMount runs
+7. API call starts
+
+8. API response comes
+9. setState()
+
+10. Child render again (with data)
+11. UI updates
+🔥 KEY UNDERSTANDING
+👉 First render ALWAYS happens with empty data
+
+Because:
+
+API takes time
+React does NOT wait
+⚡ Why UI updates “in milliseconds”?
+
+👉 Because:
+
+API is async
+React is fast
+setState triggers quick re-render
+🧠 Important concept (VERY IMPORTANT)
+
+👉 React lifecycle here:
+
+Mounting phase
+constructor → render → componentDidMount
+Updating phase (after API)
+setState → render again
+🔥 Visual Timeline
+Initial render → Empty UI
+        ↓
+componentDidMount → API call
+        ↓
+Data received
+        ↓
+setState
+        ↓
+Re-render → UI updated
+⚡ One-line understanding
+
+👉 React first shows UI, then fills data later
+
+❗ Why not wait for API before render?
+
+Because:
+
+UI would be blocked ❌
+Bad user experience ❌
+
+👉 So React shows UI first → updates later ✅
+
+🧠 Real-world analogy
+
+👉 Like loading a page:
+
+Page opens first
+Then data loads
+Then content appears
+🔥 Final takeaway
+First render → empty state
+componentDidMount → API call
+setState → re-render
+UI updates with data
+
+
+-----------> doubt cleared whi we used || {} 
+
+
+Good—this is a small line but very important concept 👍
+
+You wrote:
+
+const { name, location, avatar_url } = this.state.userInfo || {};
+🔥 Why we use || {}
+
+👉 Simple answer:
+
+To avoid error when data is not yet available
+
+🧠 What happens WITHOUT it?
+
+Initial state:
+
+this.state = {
+    userInfo: {}
+};
+
+But imagine if userInfo was:
+
+userInfo = undefined
+
+Then this line:
+
+const { name } = this.state.userInfo;
+
+👉 Will crash ❌
+
+Cannot destructure property 'name' of undefined
+✅ What || {} does
+this.state.userInfo || {}
+
+👉 Means:
+
+If userInfo exists → use it
+If userInfo is undefined/null → use empty object {}
+🔁 Example
+Case 1: Data not yet loaded
+userInfo = undefined
+
+👉 becomes:
+
+undefined || {} → {}
+
+👉 safe destructuring:
+
+const { name } = {};
+
+👉 no error ✅
+
+Case 2: Data loaded
+userInfo = { name: "adarsh" }
+
+👉 becomes:
+
+{ name: "adarsh" } || {}
+
+👉 same object used ✅
+
+🧠 Why this is needed in YOUR case
+
+Because:
+
+👉 First render happens BEFORE API call finishes
+
+So temporarily:
+
+userInfo = {}
+
+(or sometimes undefined depending on code)
+
+⚡ Simple understanding
+
+👉 || {} = safety fallback
+
+🔥 One-line memory
+
+👉 “If data not there, use empty object instead of crashing”
+
+💡 Alternative (modern way)
+
+You can also use optional chaining:
+
+this.state.userInfo?.name
+
+But for destructuring:
+
+const { name } = this.state.userInfo || {};
+
+is common.
+
+🧠 Final takeaway
+React renders before API completes
+Data may be missing initially
+|| {} prevents crash

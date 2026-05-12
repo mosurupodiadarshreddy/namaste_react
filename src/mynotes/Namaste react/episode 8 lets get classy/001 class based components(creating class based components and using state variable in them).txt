@@ -1,0 +1,193 @@
+In this episode we will be studying about class based components 
+
+📘 Class Components – Basic Definition
+Class components are an older way of creating components in React using JavaScript classes.
+They use class, constructor, this, and render() method.
+Before Hooks came, class components were used to manage state and lifecycle.
+Today, functional components are preferred, but class components are still important for understanding and interviews.
+
+so now will do one thing like will use aboutus as a class based component and will play with the code 
+so here we will in about page just showcase some any user profile details will make some git api call and just display so we will do it by using the class based component 
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+🔥 Difference 1: Passing Props
+Functional Component
+const User = (props) => {
+    return <h1>{props.name}</h1>;
+};
+
+👉 Props come directly as a parameter
+
+Class Component
+class User extends React.Component {
+    render() {
+        return <h1>{this.props.name}</h1>;
+    }
+}
+
+👉 Props are accessed using this.props
+
+🧠 Simple Understanding
+Functional → props.name
+Class → this.props.name
+
+👉 this means:
+
+“current class object”
+
+📘 Class Component with Constructor
+class User extends React.Component {
+
+    constructor(props) {
+        super(props);
+        console.log("Constructor called");
+    }
+
+    render() {
+        console.log("Render called");
+
+        return <h1>{this.props.name}</h1>;
+    }
+}
+🧠 What is constructor?
+
+👉 Simple definition:
+
+Constructor is a special method that runs first when a class component is created
+
+🔁 Flow (VERY IMPORTANT)
+
+When React sees:
+
+<User name="Adarsh" />
+
+👉 It does:
+
+Create object of class
+Call constructor(props)
+Then call render()
+🔍 Output order
+Constructor called
+Render called
+🔥 Why we write constructor(props)?
+
+Because we want to receive props inside constructor
+
+🔥 Why super(props)?
+
+👉 Your class is:
+
+class User extends React.Component
+
+That means:
+
+“User is using features of React.Component”
+
+So before using this, we must call parent constructor:
+
+super(props);
+
+👉 Without this:
+
+this will not work
+this.props will be undefined
+🧠 Simple meaning
+constructor → setup phase
+super(props) → activate React features
+this → current class instance
+📌 When constructor is USED
+
+👉 You use constructor mainly for:
+
+1️⃣ Initializing state
+constructor(props) {
+    super(props);
+
+    this.state = {
+        count: 0
+    };
+}
+2️⃣ Binding methods (older pattern)
+this.handleClick = this.handleClick.bind(this);
+
+(rare now, but important for interviews)
+
+📌 When constructor is NOT needed
+
+👉 If you are:
+
+Only using props
+Not creating state
+Not binding methods
+
+Then you can skip it completely 👇
+
+class User extends React.Component {
+    render() {
+        return <h1>{this.props.name}</h1>;
+    }
+}
+
+✅ This is perfectly valid
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+📘 Difference 2: State Variables
+🔹 1. Functional Components (Modern Way)
+✅ How to create state
+import { useState } from "react";
+
+const User = () => {
+    const [count, setCount] = useState(0);
+
+    return (
+        <button onClick={() => setCount(count + 1)}>
+            Count: {count}
+        </button>
+    );
+};
+🧠 Simple points
+useState(0) → initial value = 0
+count → current value
+setCount() → function to update value
+🔥 How we use
+Read → count
+Update → setCount(newValue)
+🔹 2. Class Components (Old Way)
+✅ How to create state
+constructor(props){
+    super(props);
+
+    this.state = {
+        count: 0,
+        count1: 0
+    };
+}
+🧠 What is "big state object"?
+
+👉 In class components:
+
+All state variables are stored inside one object
+That object is this.state
+this.state = {
+    count: 0,
+    count1: 0
+};
+
+👉 That’s why it’s called big state object
+
+🔥 How we use
+Read → this.state.count
+Update → this.setState({...})
+✅ Correct update example
+this.setState({
+    count: this.state.count + 1
+});
+
+| Feature      | Functional    | Class           |
+| ------------ | ------------- | --------------- |
+| Create state | useState()    | this.state      |
+| Update state | setCount()    | this.setState() |
+| Structure    | Separate vars | One big object  |
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+

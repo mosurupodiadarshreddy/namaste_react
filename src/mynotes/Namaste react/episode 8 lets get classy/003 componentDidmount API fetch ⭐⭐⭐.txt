@@ -1,0 +1,241 @@
+🔹 What is componentDidMount()?
+
+👉 Simple definition:
+
+componentDidMount() runs AFTER the component is shown on the UI
+
+🧠 Think like this
+constructor → prepare
+render → create UI
+componentDidMount → UI is now visible on screen
+🔥 Why is it useful?
+
+👉 Because this is the safe place to do side work, like:
+
+API calls (fetch data)
+timers (setTimeout)
+subscriptions
+DOM operations
+📌 Example use
+componentDidMount() {
+    fetch("https://api.github.com/users/adarsh")
+}
+
+👉 You fetch data after UI is ready
+
+🚀 Now YOUR CODE – Execution Order
+
+Let’s track logs step-by-step.
+
+🔹 Step 1: Parent starts
+parent constructor
+parent render
+
+👉 Parent is created and rendered
+
+🔹 Step 2: Child starts
+child constructor
+child render
+
+👉 Because parent render contains:
+
+<Userclass />
+🔹 Step 3: Mounting completes
+
+Now React shows UI on screen ✅
+
+Then:
+
+child did mount
+parent did mount
+🧾 FINAL OUTPUT ORDER
+parent constructor
+parent render
+child constructor
+child render
+child did mount
+parent did mount
+🔥 Why this order? (Very important)
+👉 First: React builds UI (top → down)
+Parent constructor
+Parent render
+Child constructor
+Child render
+👉 Then: Mounting happens (bottom → up)
+Child componentDidMount
+Parent componentDidMount
+🧠 Simple memory trick
+
+👉 Render = top → down
+👉 DidMount = bottom → up
+
+🔹 Why child didMount runs first?
+
+Because:
+
+👉 Child UI is ready first
+👉 Then parent finishes mounting
+
+⚡ One-line understanding
+
+👉 componentDidMount =
+“Now everything is on screen, you can safely do API calls”
+
+🔥 Important interview point
+
+👉 Why not API call in constructor?
+
+❌ Constructor → UI not ready
+✅ componentDidMount → UI ready
+
+🧠 Final simple summary
+constructor → setup
+render → build UI
+componentDidMount → UI shown + do API work
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐ componentdidmount is used to make an api call simple 
+
+many people says that why componentdidmount is used means just they say to make an api calls but they dont know reason shall we go for reason 
+
+
+
+__>⭐ First: Functional Component (How API call works)
+import { useEffect, useState } from "react";
+
+const User = () => {
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        fetch("https://api.github.com/users/adarsh")
+            .then(res => res.json())
+            .then(data => setData(data));
+    }, []);
+
+    return <div>{data ? data.login : "Loading..."}</div>;
+};
+🧠 What is happening here?
+Component renders first
+Then useEffect runs
+API call happens
+setData() updates state
+Component re-renders with data
+
+⭐ Now: Class Component (Same thing)
+class User extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { data: null };
+    }
+
+    componentDidMount() {
+        fetch("https://api.github.com/users/adarsh")
+            .then(res => res.json())
+            .then(data => this.setState({ data }));
+    }
+
+    render() {
+        return <div>{this.state.data ? this.state.data.login : "Loading..."}</div>;
+    }
+}
+
+🧠 What is happening here?
+constructor → setup state
+render → show "Loading..."
+componentDidMount → API call
+setState() → update data
+render runs again
+🔥 NOW THE MAIN QUESTION: WHY componentDidMount?
+
+Not just “for API call”—there is a real reason 👇
+
+🧠 Core Reason (Very Important)
+
+👉 Because API calls are SIDE EFFECTS
+
+🔹 What is a side effect?
+
+Anything that is NOT just returning UI:
+
+API calls
+timers
+subscriptions
+DOM changes
+❌ Why NOT inside render()?
+
+Because:
+
+👉 render() should be pure
+
+Same input → same output
+
+If you do API call in render:
+
+It may run multiple times
+It can cause infinite calls
+
+Bad performance
+❌ Why NOT inside constructor()?
+
+Because:
+
+👉 Component is NOT yet mounted to UI
+
+DOM not ready
+UI not visible
+unsafe for async work
+✅ Why componentDidMount()?
+
+Because:
+
+👉 It runs after first render AND after UI is on screen
+
+So:
+
+UI is ready ✅
+Safe to call API ✅
+Runs only once ✅
+🔁 Same concept in Functional
+
+👉 useEffect(() => {}, []) = componentDidMount()
+
+| Class             | Functional              |
+| ----------------- | ----------------------- |
+| componentDidMount | useEffect(() => {}, []) |
+
+❗ Why can’t we use useEffect in class?
+
+👉 Because:
+
+useEffect is a Hook
+Hooks work only in functional components
+Class components follow lifecycle methods
+🧠 Simple understanding
+
+👉 React gives two systems:
+
+Class world
+constructor
+render
+componentDidMount
+Functional world
+function
+useState
+useEffect
+🔥 Real Reason (One-line)
+
+👉 API call must run AFTER UI is ready and only once
+
+⚡ Final clean explanation (you can write in notes)
+API calls are side effects
+Side effects should not run inside render
+Constructor runs before UI is ready
+componentDidMount runs after UI is mounted
+So API calls are placed in componentDidMount
+In functional components, useEffect([]) does the same job
+🧠 Super simple analogy
+render() → draw screen
+componentDidMount() → now screen is ready → fetch data
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

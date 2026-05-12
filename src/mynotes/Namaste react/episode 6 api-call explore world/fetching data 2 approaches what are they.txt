@@ -1,6 +1,6 @@
 1️⃣approach 1 ::: 
 
-as soon as age loads we can reder data and displays on our page loads->api->render data
+as soon as page loads we can render data and displays on our page loads->api->render data
 suppose if api call takes 2 sec to render data our page will wait for 2 sec and then after 2 sec it renders UI 
 
 Problem ❌
@@ -13,7 +13,7 @@ website is slow website is broken
 
 2️⃣approach 2:: 
 
-as soon as page loads we will quicky rendr what ever we have and make api call and oce data gets again we will re-render our UI 
+as soon as page loads we will quicky render what ever we have and make api call and once data gets again we will re-render our UI 
 
 In React we follow the second approach where the UI renders immediately and the API call happens in the background. Once the data arrives, React updates the UI using state. This improves perceived performance and user experience because users see a loading state instead of a blank page.
 

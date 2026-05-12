@@ -1,5 +1,4 @@
 import React from "react";
-import "./Restaurantcard.css";
 import { Link } from "react-router-dom";
 
 const Restaurantcard = ({ restaurantdata }) => {

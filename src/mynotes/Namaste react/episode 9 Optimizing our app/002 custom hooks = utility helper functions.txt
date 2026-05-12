@@ -1,0 +1,141 @@
+Not exactly—you’re mixing two ideas.
+A custom hook is NOT just a helper function in a utility file.
+
+Let’s fix that clearly 👇
+
+🔹 What is a Custom Hook?
+
+In React:
+
+A custom hook is a function that uses React hooks (like useState, useEffect) to reuse stateful logic across components
+
+🔑 Simple definition
+
+Custom Hook = reusable logic that involves React state or lifecycle
+
+❌ Your statement (needs correction)
+
+“custom hooks = helper functions in utility classes”
+
+👉 This is wrong
+
+Because:
+
+Helper functions → normal JS functions (no React hooks)
+Custom hooks → must use React hooks
+🔹 Example to understand clearly
+❌ Normal Helper Function (Utility)
+function formatDate(date) {
+  return date.toLocaleDateString();
+}
+
+✔ Just a helper
+❌ No React logic
+❌ Not a hook
+
+✅ Custom Hook
+import { useState, useEffect } from "react";
+
+function useUser() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    fetch("/api/user")
+      .then(res => res.json())
+      .then(data => setUser(data));
+  }, []);
+
+  return user;
+}
+
+✔ Uses useState, useEffect
+✔ Reusable across components
+✔ This is a custom hook
+
+🔹 Usage
+function Profile() {
+  const user = useUser();
+
+  return <h1>{user?.name}</h1>;
+}
+🔥 Why we use Custom Hooks (SRP + Modularity)
+
+Instead of writing API logic inside components:
+
+❌ Bad:
+
+function Profile() {
+  // fetch logic here
+}
+
+✅ Good:
+
+function Profile() {
+  const user = useUser();
+}
+
+👉 Component → UI responsibility
+👉 Hook → data logic responsibility
+
+This follows SRP + modularity
+
+🔑 Key rules (important for interviews)
+
+Must start with use
+useUser, useAuth
+Must use React hooks inside
+useState, useEffect, etc.
+Used to share logic between components
+
+🧠 Final understanding
+
+| Concept         | What it is                        |
+| --------------- | --------------------------------- |
+| Helper function | Simple reusable JS logic          |
+| Custom hook     | Reusable **React stateful logic** |
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+🔹 Why do custom hooks start with use?
+
+In React, this is not just naming style—it’s a rule.
+
+👉 Reason 1: React identifies Hooks by the use prefix
+
+React follows the Rules of Hooks:
+
+Any function starting with use is treated as a Hook
+
+This allows React (and tools like ESLint) to:
+
+Ensure hooks are called correctly
+Prevent mistakes like calling hooks inside loops or conditions
+👉 Reason 2: Developer clarity
+
+When you see:
+
+useProductMenu()
+
+You instantly know:
+
+It uses React hooks internally
+It manages state/effects
+It must follow hook rules
+❌ Without use (bad practice)
+function productMenu() {
+  const [data, setData] = useState(); // ❌ confusing
+}
+
+Problems:
+
+Looks like a normal function
+Violates React conventions
+Lint rules may not detect errors
+✅ With use (correct)
+function useProductMenu() {
+  const [data, setData] = useState();
+}
+
+✔ Clear it's a hook
+✔ React rules apply
+✔ Easy to understand
