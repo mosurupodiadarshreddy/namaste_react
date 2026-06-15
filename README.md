@@ -43,3 +43,12 @@ journey in learning of react course
  * - address
  * - contact
 */
+
+
+**/ REDUX TOOLKIT 
+- install reactjs toolkit / and react-redux
+- build our store 
+- connect our store to our app
+- create slice (cart slice)
+- dispatch action 
+- selector 
