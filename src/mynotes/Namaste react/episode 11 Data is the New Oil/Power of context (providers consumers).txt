@@ -1,0 +1,443 @@
+# React Context API - Power of Context, Provider, Consumer, and useContext
+
+## Introduction
+
+React applications often contain many components arranged in a deep hierarchy.
+
+Example:
+
+```text
+App
+ ├── Header
+ ├── Body
+ │    └── RestaurantCard
+ └── Footer
+```
+
+Suppose both `Header` and `Body` need access to the logged-in user's name.
+
+Without Context, the user data must be passed through props from parent to child repeatedly.
+
+This leads to a problem called **Props Drilling**.
+
+React introduced the **Context API** to solve this problem.
+
+---
+
+# The Power of Context
+
+The biggest power of Context is:
+
+> One component can create and manage data, and any other component inside the Provider tree can read or update that data without props drilling.
+
+In our example:
+
+```jsx
+const [username, setUsername] = useState("Adarsh M");
+```
+
+This state exists inside `App.js`.
+
+However, both:
+
+```text
+Header.js
+Body.js
+```
+
+can access and modify this value through Context.
+
+Without Context:
+
+```text
+App
+ ↓ username
+Header
+
+App
+ ↓ username
+Body
+```
+
+With Context:
+
+```text
+UserContext
+      ↓
+Header
+      ↓
+Body
+```
+
+Both components directly access the same data source.
+
+---
+
+# Creating a Context
+
+Context is created using:
+
+```jsx
+import { createContext } from "react";
+
+const UserContext = createContext({
+    user: "Adarsh Reddy",
+    email: "adarshreddy713@gmail.com",
+    phone: "9100244598",
+    role: "Admin"
+});
+
+export default UserContext;
+```
+
+This creates a Context object.
+
+The object passed inside `createContext()` is called the **default value**.
+
+---
+
+# What is the Default Value?
+
+The value inside `createContext()` is not the main application value.
+
+It acts as a fallback value.
+
+Example:
+
+```jsx
+const UserContext = createContext({
+    user: "Adarsh Reddy"
+});
+```
+
+If React cannot find a matching Provider, it returns:
+
+```text
+Adarsh Reddy
+```
+
+This is why it is called the default value.
+
+---
+
+# What is a Provider?
+
+A Provider is a special React component that supplies actual values to child components.
+
+Example:
+
+```jsx
+<UserContext.Provider
+    value={{
+        user: username,
+        setUsername
+    }}
+>
+    <Header />
+    <Body />
+</UserContext.Provider>
+```
+
+The Provider makes the supplied data available to all components inside it.
+
+---
+
+# How Provider Overrides Default Values
+
+Suppose the Context was created as:
+
+```jsx
+createContext({
+    user: "Adarsh Reddy"
+});
+```
+
+and the Provider supplies:
+
+```jsx
+<UserContext.Provider
+    value={{
+        user: "Adarsh M"
+    }}
+>
+```
+
+Then:
+
+```jsx
+const { user } = useContext(UserContext);
+```
+
+returns:
+
+```text
+Adarsh M
+```
+
+not
+
+```text
+Adarsh Reddy
+```
+
+because Provider values always take priority over the default value.
+
+---
+
+# Interview Definition of Provider
+
+> A Provider is a React Context component that supplies data to all child components. The value provided by the Provider overrides the default value defined in createContext().
+
+---
+
+# Accessing Context Using useContext
+
+React provides a Hook called:
+
+```jsx
+useContext()
+```
+
+Example:
+
+```jsx
+const { user } = useContext(UserContext);
+```
+
+This allows functional components to access Context values directly.
+
+Example:
+
+```jsx
+const Header = () => {
+
+    const { user } = useContext(UserContext);
+
+    return (
+        <h1>User : {user}</h1>
+    );
+};
+```
+
+Output:
+
+```text
+User : Adarsh M
+```
+
+---
+
+# Updating Context from Another Component
+
+This is where Context becomes powerful.
+
+In App.js:
+
+```jsx
+const [username, setUsername] = useState("Adarsh M");
+```
+
+Provider:
+
+```jsx
+<UserContext.Provider
+    value={{
+        user: username,
+        setUsername
+    }}
+>
+```
+
+In Body.js:
+
+```jsx
+const { user, setUsername } = useContext(UserContext);
+```
+
+Input:
+
+```jsx
+<input
+    value={user}
+    onChange={(e) =>
+        setUsername(e.target.value)
+    }
+/>
+```
+
+When the user types:
+
+```text
+Reddy
+```
+
+the following happens:
+
+```text
+Body.js
+   ↓
+setUsername("Reddy")
+   ↓
+App.js state updates
+   ↓
+Provider value updates
+   ↓
+Header re-renders
+   ↓
+Body re-renders
+```
+
+Output:
+
+```text
+Header
+User : Reddy
+```
+
+Even though the state exists in App.js, it is updated from Body.js.
+
+This demonstrates the true power of Context.
+
+---
+
+# What is UserContext.Consumer?
+
+Before Hooks existed, React functional components could not use:
+
+```jsx
+useContext()
+```
+
+Class components still cannot use Hooks.
+
+Therefore React provides:
+
+```jsx
+UserContext.Consumer
+```
+
+to access Context values.
+
+Example:
+
+```jsx
+<UserContext.Consumer>
+{
+    (data) => (
+        <h1>{data.user}</h1>
+    )
+}
+</UserContext.Consumer>
+```
+
+Output:
+
+```text
+Adarsh M
+```
+
+---
+
+# Why Consumer Exists
+
+Hooks work only inside Functional Components.
+
+Example:
+
+```jsx
+const Header = () => {
+    const { user } = useContext(UserContext);
+}
+```
+
+But Class Components cannot use Hooks.
+
+Example:
+
+```jsx
+class Header extends React.Component {
+
+}
+```
+
+Because Hooks are unavailable inside class components, React introduced:
+
+```jsx
+UserContext.Consumer
+```
+
+to access Context values.
+
+---
+
+# useContext vs Consumer
+
+## Functional Component
+
+```jsx
+const { user } = useContext(UserContext);
+```
+
+Simple and modern approach.
+
+---
+
+## Class Component
+
+```jsx
+<UserContext.Consumer>
+{
+    (data) => (
+        <h1>{data.user}</h1>
+    )
+}
+</UserContext.Consumer>
+```
+
+Used when Hooks cannot be used.
+
+---
+
+# Complete Flow
+
+```text
+createContext()
+        ↓
+Default Value Created
+        ↓
+Provider Supplies Actual Values
+        ↓
+Provider Overrides Default Value
+        ↓
+useContext() or Consumer Reads Values
+        ↓
+Components Re-render When Context Changes
+```
+
+---
+
+# Interview Summary
+
+### What problem does Context solve?
+
+Context solves the Props Drilling problem by allowing data to be shared directly between components.
+
+### What is Context?
+
+Context is a React mechanism for sharing data across components without passing props manually at every level.
+
+### What is a Provider?
+
+A Provider supplies Context values to child components and overrides the default value defined in createContext().
+
+### What is useContext?
+
+useContext is a React Hook used by functional components to access Context values.
+
+### What is Context.Consumer?
+
+Context.Consumer is used to access Context values in class components or in older React code where Hooks are unavailable.
+
+### What is the power of Context?
+
+Context allows one component to create and manage state while other components can read and update that state directly without props drilling.

@@ -1,0 +1,93 @@
+# React DevTools Profiler
+
+## Overview
+
+React DevTools is a Chrome browser extension that helps developers inspect React applications and analyze component rendering behavior. It provides useful debugging features such as viewing component hierarchies, checking props and state, monitoring hooks, and measuring application performance using the Profiler.
+
+## Installing React DevTools
+
+Open Chrome and search for **React Developer Tools** in the Chrome Web Store. Install the extension by clicking **Add to Chrome**. Once installed, open your React application in the browser.
+
+Start your React application using:
+
+```bash
+npm start
+```
+
+or
+
+```bash
+npm run dev
+```
+
+## Accessing React DevTools
+
+Open your application and press **F12** or right-click and select **Inspect**. In the Developer Tools window, you will see additional tabs named **Components** and **Profiler** that are provided by React DevTools.
+
+## Components Tab
+
+The Components tab displays the complete React component tree of the application. Selecting a component allows you to inspect:
+
+* Props passed to the component
+* State values
+* Hook data
+* Parent-child relationships
+
+For example, if a page contains an App component with Header, Body, and Footer components, the entire hierarchy can be viewed and inspected from this tab.
+
+This is very useful when debugging issues related to state updates, prop values, or component structure.
+
+## Profiler Tab
+
+The Profiler tab is used to analyze rendering performance.
+
+Click **Start Profiling** (Record button) and then interact with the application. You can:
+
+* Click buttons
+* Navigate between pages
+* Open popups or modals
+* Search data
+* Trigger API calls
+
+React DevTools records all component renders that occur during these actions.
+
+After completing the interactions, click **Stop Profiling**.
+
+## Understanding the Recording
+
+The profiler displays each render cycle (called a Commit) that occurred while recording.
+
+For every commit, you can see:
+
+* Which components rendered
+* How long each component took to render
+* Why a component rendered
+* Which components caused performance issues
+
+For example, if clicking a search button causes 50 RestaurantCard components to render again, the profiler will clearly show those re-renders.
+
+## Debugging Example
+
+Suppose a user types into a search box. After recording, the profiler shows:
+
+* SearchBar rendered
+* RestaurantList rendered
+* RestaurantCard rendered multiple times
+
+This indicates that many components are re-rendering when only the search text changes.
+
+By applying optimizations such as `React.memo`, `useMemo`, or `useCallback`, unnecessary renders can be reduced. Running the profiler again helps verify whether the optimization worked.
+
+## Benefits
+
+React DevTools helps developers:
+
+* Inspect component structures
+* View props and state values
+* Debug hook data
+* Track component re-renders
+* Identify slow components
+* Analyze application performance
+* Optimize React applications effectively
+
+It is one of the most useful tools for understanding how a React application behaves internally and for finding performance bottlenecks during development.

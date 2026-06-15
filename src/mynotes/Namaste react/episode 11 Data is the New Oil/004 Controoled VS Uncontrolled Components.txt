@@ -1,0 +1,202 @@
+What is an Uncontrolled Component?
+
+An uncontrolled component manages its own state internally.
+
+In your code:
+
+const [showItems, setShowItems] = useState(false);
+
+and
+
+<button onClick={() => {
+    setShowItems(!showItems);
+    fetchCategoryProducts();
+}}>
+
+The RestaurantCategory component itself decides:
+
+When to open
+When to close
+Whether items should be shown
+
+No parent component controls it.
+
+So currently:
+
+<RestaurantCategory title={category.title} />
+
+The parent (RestaurantMenu) only sends the title.
+
+The parent has no idea:
+
+Is accordion open?
+Is accordion closed?
+Which accordion is open?
+
+Everything is managed inside RestaurantCategory.
+
+This is called an Uncontrolled Component.
+
+Current Flow (Uncontrolled)
+RestaurantMenu
+      |
+      | title
+      ↓
+RestaurantCategory
+      |
+      | manages own state
+      ↓
+showItems = true/false
+
+The parent cannot control the accordion.
+
+What is a Controlled Component?
+
+A controlled component does not manage important state itself.
+
+Instead:
+
+Parent owns the state
+Parent passes state as props
+Parent passes functions to update state
+
+Child only displays UI.
+
+Example Using Your Code
+
+Suppose Akshay wants:
+
+👉 Only one accordion should be open at a time.
+
+Current code cannot do that.
+
+Why?
+
+Because every accordion has its own:
+
+const [showItems, setShowItems] = useState(false);
+
+If you open 3 accordions:
+
+Category 1 -> Open
+Category 2 -> Open
+Category 3 -> Open
+
+All remain open.
+
+Controlled Version
+
+Move state to parent:
+
+RestaurantMenu
+const [showIndex, setShowIndex] = useState(null);
+
+Pass it to child:
+
+<RestaurantCategory
+    title={category.title}
+    showItems={index === showIndex}
+    setShowItems={() => setShowIndex(index)}
+/>
+RestaurantCategory
+
+Remove:
+
+const [showItems, setShowItems] = useState(false);
+
+Receive props:
+
+const RestaurantCategory = ({
+    title,
+    showItems,
+    setShowItems
+}) => {
+
+Button:
+
+<button onClick={() => {
+    setShowItems();
+    fetchCategoryProducts();
+}}>
+New Flow (Controlled)
+RestaurantMenu
+      |
+      | owns state
+      ↓
+showIndex = 1
+
+      |
+      ↓
+
+RestaurantCategory
+      |
+      | receives props
+      ↓
+showItems=true
+
+Now parent controls everything.
+
+Why Controlled Components are Better?
+
+Suppose you have:
+
+Electronics
+Smartphones
+Laptops
+Groceries
+
+Requirement:
+
+Only one category should be open at a time.
+
+Without controlled components:
+
+✓ Electronics
+✓ Smartphones
+✓ Laptops
+
+All can open together.
+
+With controlled components:
+
+✓ Electronics
+
+❌ Smartphones
+❌ Laptops
+
+Opening one automatically closes others.
+
+This is exactly the accordion example that Akshay Saini explains.
+
+Interview Answer
+
+What is a Controlled Component?
+
+A controlled component is a component whose important state is managed by its parent component through props. The parent controls the component's behavior and updates the state.
+
+What is an Uncontrolled Component?
+
+An uncontrolled component manages its own state internally and does not depend on the parent component for state management.
+
+In Your Code
+
+Current implementation:
+
+const [showItems, setShowItems] = useState(false);
+
+inside RestaurantCategory.
+
+Therefore:
+
+✅ RestaurantCategory is an Uncontrolled Component because it controls its own open/close state.
+
+If showItems is moved to RestaurantMenu and passed via props:
+
+<RestaurantCategory
+   showItems={showItems}
+   setShowItems={setShowItems}
+/>
+
+then RestaurantCategory becomes a Controlled Component because the parent controls its state.
+
+This accordion example is one of the most common real-world uses of controlled components in React interviews.

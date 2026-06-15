@@ -1,0 +1,376 @@
+Interview Answer
+
+😲React and Redux are both JavaScript libraries, but they serve different purposes.
+
+⭐React is a UI library used to build user interfaces and components.
+⭐Redux is a state management library used to manage and share application data across multiple components.
+
+😲Redux is not mandatory in React applications. We can build complete React applications using React's built-in features such as useState, useContext, and useReducer.
+
+😲Redux is generally used when the application becomes large and multiple components need to access and update the same data frequently.
+
+==============================================================================================================================================================================================
+
+# 🚀 Understanding Redux, React-Redux, and Redux Toolkit
+
+## 📌 Introduction
+
+When learning Redux, many developers get confused between:
+
+1. React
+2. Redux
+3. React-Redux
+4. Redux Toolkit (RTK)
+
+A common question is:
+
+> If we are already using Redux Toolkit, why do we also install React-Redux?
+
+To answer this, we first need to understand the responsibility of each library.
+
+---
+
+# 🏗️ The Three Main Pieces
+
+## 1️⃣ React
+
+React is a UI library.
+
+Its responsibility is:
+
+* Building User Interfaces
+* Creating Components
+* Rendering Data on Screen
+* Handling User Interactions
+
+React itself does not provide advanced global state management.
+
+---
+
+## 2️⃣ Redux
+
+Redux is a state management library.
+
+Its responsibility is:
+
+* Creating a centralized Store
+* Managing Application State
+* Updating State through Actions and Reducers
+* Maintaining Predictable Data Flow
+
+Redux is completely independent of React.
+
+Redux can work with:
+
+✅ React
+
+✅ Angular
+
+✅ Vue
+
+✅ Plain JavaScript
+
+---
+
+## 3️⃣ React-Redux
+
+React-Redux is the official integration library between React and Redux.
+
+Its responsibility is:
+
+* Connecting React Components to Redux Store
+* Providing React-specific hooks
+* Making Redux Store available throughout the React application
+
+Without React-Redux, React components cannot directly communicate with Redux.
+
+---
+
+# 🏠 Real-Life Analogy
+
+Imagine:
+
+```text
+React         = House
+Redux Store   = Water Tank
+React-Redux   = Water Pipe
+```
+
+Without the pipe:
+
+```text
+House ❌ Water Tank
+```
+
+The water tank exists, but the house cannot use it.
+
+With React-Redux:
+
+```text
+House ← Pipe → Water Tank
+```
+
+Now the house can access water from the tank.
+
+Similarly:
+
+```text
+React ← React-Redux → Redux Store
+```
+
+React components can now access and update data from the Redux Store.
+
+---
+
+# 🔴 What Does Redux Provide?
+
+Traditional Redux provides:
+
+```text
+Store
+Actions
+Reducers
+Dispatch
+State Management Logic
+```
+
+Example:
+
+```javascript
+const store = createStore(reducer);
+```
+
+Redux manages state but knows nothing about React components.
+
+---
+
+# ⚛️ What Does React-Redux Provide?
+
+React-Redux provides React-specific features.
+
+## Provider
+
+Makes the Redux Store available throughout the application.
+
+```jsx
+<Provider store={store}>
+    <App />
+</Provider>
+```
+
+---
+
+## useSelector()
+
+Used to read data from the Redux Store.
+
+```javascript
+const cartItems = useSelector(
+  (store) => store.cart.items
+);
+```
+
+---
+
+## useDispatch()
+
+Used to send actions to update the Store.
+
+```javascript
+const dispatch = useDispatch();
+```
+
+---
+
+### Summary
+
+React-Redux provides:
+
+✅ Provider
+
+✅ useSelector()
+
+✅ useDispatch()
+
+✅ Connection between React and Redux
+
+---
+
+# 🛠️ What is Redux Toolkit (RTK)?
+
+Redux Toolkit is the official recommended way to write Redux applications.
+
+The Redux team created Redux Toolkit to reduce boilerplate code and simplify development.
+
+---
+
+# ❌ Problems with Traditional Redux
+
+Traditional Redux requires:
+
+```text
+Action Types
+Action Creators
+Reducers
+Switch Statements
+Store Configuration
+```
+
+Example:
+
+```javascript
+const ADD_ITEM = "ADD_ITEM";
+
+function addItem(item) {
+  return {
+    type: ADD_ITEM,
+    payload: item
+  };
+}
+```
+
+Large applications often end up with many files and repetitive code.
+
+---
+
+# ✅ Redux Toolkit Solution
+
+Redux Toolkit simplifies Redux development.
+
+Instead of writing separate:
+
+```text
+Actions
+Action Types
+Reducers
+```
+
+Redux Toolkit allows everything to be written inside a Slice.
+
+Example:
+
+```javascript
+const cartSlice = createSlice({
+  name: "cart",
+  initialState: {
+    items: []
+  },
+  reducers: {
+    addItem(state, action) {
+      state.items.push(action.payload);
+    }
+  }
+});
+```
+
+This reduces code significantly.
+
+---
+
+# 📦 Why Do We Install Both Packages?
+
+Modern React applications usually install:
+
+```bash
+npm install @reduxjs/toolkit
+npm install react-redux
+```
+
+---
+
+## @reduxjs/toolkit
+
+Used for:
+
+✅ Creating Store
+
+✅ Creating Slices
+
+✅ Writing Reducers
+
+✅ Managing State
+
+✅ Handling Actions
+
+---
+
+## react-redux
+
+Used for:
+
+✅ Provider
+
+✅ useSelector()
+
+✅ useDispatch()
+
+✅ Connecting React Components with Store
+
+---
+
+# 🔄 Complete Data Flow
+
+```text
+React Component
+       │
+       ▼
+useDispatch()
+       │
+       ▼
+Redux Toolkit Store
+       │
+       ▼
+State Updated
+       │
+       ▼
+useSelector()
+       │
+       ▼
+React Component Re-renders
+```
+
+---
+
+# 🎯 Responsibilities of Each Library
+
+| Library       | Responsibility                 |
+| ------------- | ------------------------------ |
+| React         | Building UI Components         |
+| Redux         | State Management Engine        |
+| React-Redux   | Bridge Between React and Redux |
+| Redux Toolkit | Simplified Redux Development   |
+
+---
+
+# 🎤 Interview Answer
+
+### Why do we use both Redux Toolkit and React-Redux?
+
+Redux Toolkit is the official modern library used to write Redux logic with less boilerplate code. It helps create stores, slices, reducers, and actions efficiently.
+
+React-Redux is the official integration library that connects React components to the Redux Store. It provides features such as Provider, useSelector, and useDispatch.
+
+In modern React applications, Redux Toolkit is used for managing state, while React-Redux is used for connecting React components to that state.
+
+---
+
+# ⭐ Key Takeaways
+
+✅ React is a UI library.
+
+✅ Redux is a state management library.
+
+✅ React-Redux acts as a bridge between React and Redux.
+
+✅ Redux Toolkit simplifies Redux development.
+
+✅ Modern React applications generally use both:
+
+```bash
+npm install @reduxjs/toolkit
+npm install react-redux
+```
+
+✅ Redux Toolkit manages the state.
+
+✅ React-Redux allows React components to access and update that state.

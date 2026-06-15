@@ -1,0 +1,166 @@
+# Props Drilling in React
+
+## Overview
+
+Props Drilling is a React pattern where data is passed from a parent component to a deeply nested child component through multiple intermediate components using props.
+
+Sometimes the intermediate components do not need the data themselves, but they still have to receive and pass it further down the component tree. This process is known as Props Drilling.
+
+---
+
+## Why Does Props Drilling Happen?
+
+In React, data flows from parent components to child components through props.
+
+When a component several levels deep needs access to data stored in a top-level component, the data must be passed through each intermediate component.
+
+Example Component Hierarchy:
+
+```text
+App
+ └── Body
+      └── RestaurantList
+           └── RestaurantCard
+```
+
+Suppose `App` contains user information:
+
+```jsx
+const userName = "Adarsh";
+```
+
+If `RestaurantCard` needs this value, it must be passed through every level:
+
+```jsx
+<App userName={userName} />
+```
+
+```jsx
+<Body userName={userName} />
+```
+
+```jsx
+<RestaurantList userName={userName} />
+```
+
+```jsx
+<RestaurantCard userName={userName} />
+```
+
+Even though `Body` and `RestaurantList` do not use `userName`, they must receive and forward it.
+
+This is Props Drilling.
+
+---
+
+## Example
+
+### App Component
+
+```jsx
+function App() {
+  const userName = "Adarsh";
+
+  return <Body userName={userName} />;
+}
+```
+
+### Body Component
+
+```jsx
+function Body({ userName }) {
+  return <RestaurantList userName={userName} />;
+}
+```
+
+### RestaurantList Component
+
+```jsx
+function RestaurantList({ userName }) {
+  return <RestaurantCard userName={userName} />;
+}
+```
+
+### RestaurantCard Component
+
+```jsx
+function RestaurantCard({ userName }) {
+  return <h1>Welcome {userName}</h1>;
+}
+```
+
+Data travels through multiple components before reaching the component that actually needs it.
+
+---
+
+## Problems with Props Drilling
+
+### Increased Code Complexity
+
+Every intermediate component must accept and pass props even when it does not use them.
+
+### Difficult Maintenance
+
+When the application grows, managing and tracking props becomes difficult.
+
+### Reduced Readability
+
+Component code becomes cluttered with unnecessary props.
+
+### Scalability Issues
+
+Deep component hierarchies require many levels of prop passing.
+
+---
+
+## Solution: React Context API
+
+React provides Context API to avoid Props Drilling.
+
+Instead of passing data through every component, the data can be stored in a Context and accessed directly by any component that needs it.
+
+### Without Context
+
+```text
+App
+ ↓
+Body
+ ↓
+RestaurantList
+ ↓
+RestaurantCard
+```
+
+Data passes through every component.
+
+### With Context
+
+```text
+App (Context Provider)
+
+Body
+
+RestaurantList
+
+RestaurantCard (Consumes Context)
+```
+
+The data is accessed directly without intermediate prop passing.
+
+---
+
+## When to Use Context API
+
+Context API is useful when:
+
+* User information is needed across many components.
+* Theme settings are shared throughout the application.
+* Language preferences are used globally.
+* Authentication details are required in multiple places.
+* Application-wide state needs to be shared.
+
+---
+
+## Interview Definition
+
+Props Drilling is the process of passing data from a parent component to deeply nested child components through multiple intermediate components using props. It can make applications difficult to maintain because components that do not need the data must still pass it along. React Context API is commonly used to avoid Props Drilling.

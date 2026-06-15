@@ -1,0 +1,619 @@
+What is React Context?
+
+React Context is a feature that allows data to be shared directly between components without passing props manually through every level of the component tree.
+
+In simple words:
+
+Context provides a way to make data available to multiple components without props drilling.
+
+Why Did Context Come Into React?
+
+Before Context, React applications shared data mainly through props.
+
+Example:
+
+App
+ ↓ userName
+Body
+ ↓ userName
+RestaurantList
+ ↓ userName
+RestaurantCard
+
+If RestaurantCard needs userName, every intermediate component must pass it down, even if they don't use it.
+
+This problem is called Props Drilling.
+
+To solve this problem, React introduced Context API.
+
+With Context:
+
+App (Provider)
+      ↓
+Body
+      ↓
+RestaurantList
+      ↓
+RestaurantCard (Consumes Context)
+
+RestaurantCard can access the data directly from Context without receiving it through props.
+
+
+
+# React Context API and useContext Hook
+
+## Overview
+
+React Context API is used to share data between multiple components without passing props manually through every level of the component tree.
+
+In this example, we want to share user information such as name, email, phone number, and role across the application.
+
+---
+
+## Creating a Context
+
+First, create a Context using `createContext()`.
+
+```jsx
+import { createContext } from "react";
+
+const UserContext = createContext({
+    user : "Adarsh Reddy",
+    email : "adarshreddy713@gmail.com",
+    phone : "9100244598",
+    role : "Admin"
+});
+
+export default UserContext;
+```
+
+### What Happens Here?
+
+`createContext()` creates a Context object.
+
+The object passed inside `createContext()` is the **default value** of the Context.
+
+```jsx
+{
+    user : "Adarsh Reddy",
+    email : "adarshreddy713@gmail.com",
+    phone : "9100244598",
+    role : "Admin"
+}
+```
+
+If no Provider is found above a component, React will return this default value.
+
+---
+
+## Component Hierarchy Example
+
+Assume the application structure is:
+
+```text
+App
+ └── Body
+      └── RestaurantMenu
+           └── RestaurantCategory
+                └── RestaurantCard
+```
+
+Suppose `RestaurantCard` needs the logged-in user's details.
+
+Without Context:
+
+```text
+App
+ ↓ userData
+Body
+ ↓ userData
+RestaurantMenu
+ ↓ userData
+RestaurantCategory
+ ↓ userData
+RestaurantCard
+```
+
+Every component must pass the data even if it doesn't use it.
+
+This is called **Props Drilling**.
+
+---
+
+## Using useContext Hook
+
+React provides a built-in Hook called `useContext()`.
+
+Purpose:
+
+> To read data directly from a Context.
+
+Example:
+
+```jsx
+import { useContext } from "react";
+import UserContext from "../utils/UserContext";
+
+const RestaurantCard = () => {
+
+    const userData = useContext(UserContext);
+
+    console.log(userData);
+
+    return (
+        <div>
+            <h2>{userData.user}</h2>
+        </div>
+    );
+}
+```
+
+Output:
+
+```js
+{
+    user: "Adarsh Reddy",
+    email: "adarshreddy713@gmail.com",
+    phone: "9100244598",
+    role: "Admin"
+}
+```
+
+---
+
+## Destructuring Context Data
+
+Instead of using:
+
+```jsx
+userData.user
+userData.email
+userData.phone
+userData.role
+```
+
+we can destructure:
+
+```jsx
+const { user, email, phone, role } = useContext(UserContext);
+```
+
+Now directly use:
+
+```jsx
+<h1>{user}</h1>
+<p>{email}</p>
+<p>{phone}</p>
+<p>{role}</p>
+```
+
+---
+
+## Real Example
+
+```jsx
+import { useContext } from "react";
+import UserContext from "../utils/UserContext";
+
+const RestaurantCard = () => {
+
+    const { user, email, role } = useContext(UserContext);
+
+    return (
+        <div>
+            <h2>User : {user}</h2>
+            <h3>Email : {email}</h3>
+            <h3>Role : {role}</h3>
+        </div>
+    );
+};
+
+export default RestaurantCard;
+```
+
+Output:
+
+```text
+User : Adarsh Reddy
+Email : adarshreddy713@gmail.com
+Role : Admin
+```
+
+---
+
+## What is useContext?
+
+`useContext()` is a built-in React Hook.
+
+Syntax:
+
+```jsx
+const value = useContext(ContextName);
+```
+
+Example:
+
+```jsx
+const userData = useContext(UserContext);
+```
+
+React automatically finds the nearest `UserContext` and returns its value.
+
+---
+
+## How React Finds the Data
+
+When React sees:
+
+```jsx
+useContext(UserContext)
+```
+
+it performs the following steps:
+
+1. Looks for `UserContext`.
+2. Searches upward in the component tree.
+3. Finds the nearest `UserContext.Provider`.
+4. Reads the value stored in that Provider.
+5. Returns the value to the component.
+
+If no Provider exists, React returns the default value defined inside:
+
+```jsx
+createContext({
+    user : "Adarsh Reddy",
+    email : "adarshreddy713@gmail.com",
+    phone : "9100244598",
+    role : "Admin"
+});
+```
+
+---
+
+## Why useContext is Useful
+
+Without Context:
+
+```text
+App
+ ↓
+Body
+ ↓
+RestaurantMenu
+ ↓
+RestaurantCategory
+ ↓
+RestaurantCard
+```
+
+Data must travel through every component.
+
+With Context:
+
+```text
+App
+ ↓
+
+Body
+
+RestaurantMenu
+
+RestaurantCategory
+
+RestaurantCard ← useContext(UserContext)
+```
+
+`RestaurantCard` directly accesses the data.
+
+No props are required.
+
+No props drilling occurs.
+
+---
+
+## Interview Answer
+
+### What is Context?
+
+Context is a React feature used to share data across multiple components without passing props manually through every level of the component tree.
+
+### What is useContext?
+
+useContext is a built-in React Hook that allows a component to access data stored inside a Context directly.
+
+### What is the benefit?
+
+It eliminates Props Drilling and makes shared data such as user information, themes, authentication details, and application settings available anywhere in the component tree.
+
+### Example
+
+```jsx
+const { user, email } = useContext(UserContext);
+```
+
+Output:
+
+```text
+User : Adarsh Reddy
+Email : adarshreddy713@gmail.com
+```
+The most important thing to remember is:
+
+createContext()  → Creates a Context
+
+useContext()     → Reads Data from Context
+
+Props Drilling   → Problem
+
+Context API      → Solution
+
+In your current example, any component can get:
+
+{
+  user: "Adarsh Reddy",
+  email: "adarshreddy713@gmail.com",
+  phone: "9100244598",
+  role: "Admin"
+}
+
+simply by calling:
+
+const userData = useContext(UserContext);
+
+without passing props from parent to child.
+
+
+
+# React Context Provider and Overriding Default Values
+
+## Creating Context
+
+We created a Context using:
+
+```jsx
+import { createContext } from "react";
+
+const UserContext = createContext({
+    user: "Adarsh Reddy",
+    email: "adarshreddy713@gmail.com",
+    phone: "9100244598",
+    role: "Admin"
+});
+
+export default UserContext;
+```
+
+The object passed to `createContext()` is called the **default value**.
+
+This value is used only when React cannot find a matching Provider above the component.
+
+---
+
+## What is a Provider?
+
+A Provider is a component supplied by React Context that allows us to provide a new value to all child components.
+
+Example:
+
+```jsx
+<UserContext.Provider value={{ user: username }}>
+    <Header />
+    <Body />
+</UserContext.Provider>
+```
+
+Here:
+
+```jsx
+value={{ user: username }}
+```
+
+is the value being shared with all child components.
+
+---
+
+## How Provider Overrides Default Values
+
+Suppose the Context was created with:
+
+```jsx
+createContext({
+    user: "Adarsh Reddy"
+});
+```
+
+but the Provider supplies:
+
+```jsx
+<UserContext.Provider
+    value={{
+        user: "Adarsh M"
+    }}
+>
+```
+
+Then React will use:
+
+```text
+Adarsh M
+```
+
+instead of:
+
+```text
+Adarsh Reddy
+```
+
+because the Provider value always takes priority over the default value.
+
+---
+
+## Example
+
+### App Component
+
+```jsx
+const [username, setUsername] = useState("Adarsh M");
+
+<UserContext.Provider value={{ user: username }}>
+    <Header />
+</UserContext.Provider>
+```
+
+### Header Component
+
+```jsx
+const data = useContext(UserContext);
+
+return <h1>{data.user}</h1>;
+```
+
+Output:
+
+```text
+Adarsh M
+```
+
+Even though the Context default value contains:
+
+```text
+Adarsh Reddy
+```
+
+the Provider overrides it.
+
+---
+
+## What Happens Without Provider?
+
+Suppose:
+
+```jsx
+<Header />
+```
+
+is rendered without:
+
+```jsx
+<UserContext.Provider>
+```
+
+Then:
+
+```jsx
+const data = useContext(UserContext);
+```
+
+returns the default value:
+
+```js
+{
+    user: "Adarsh Reddy",
+    email: "adarshreddy713@gmail.com",
+    phone: "9100244598",
+    role: "Admin"
+}
+```
+
+Output:
+
+```text
+Adarsh Reddy
+```
+
+because no Provider was found.
+
+---
+
+## Multiple Providers Example
+
+Different Providers can provide different values.
+
+```jsx
+<UserContext.Provider value={{ user: "Adarsh M" }}>
+    <Header />
+</UserContext.Provider>
+
+<UserContext.Provider value={{ user: "Ravi" }}>
+    <Footer />
+</UserContext.Provider>
+```
+
+### Header
+
+```jsx
+const data = useContext(UserContext);
+```
+
+Output:
+
+```text
+Adarsh M
+```
+
+### Footer
+
+```jsx
+const data = useContext(UserContext);
+```
+
+Output:
+
+```text
+Ravi
+```
+
+Each component receives data from the nearest Provider above it.
+
+---
+
+## Flow
+
+```text
+createContext()
+       ↓
+Default Value Created
+       ↓
+Provider Added
+       ↓
+Provider Value Overrides Default
+       ↓
+useContext() Reads Provider Value
+```
+
+---
+
+## Key Points
+
+* `createContext()` creates a Context and default value.
+* `Provider` supplies actual data to child components.
+* Provider values override default values.
+* `useContext()` reads data from the nearest Provider.
+* If no Provider exists, React returns the default value from `createContext()`.
+
+### One-Line Interview Answer
+
+A Provider is a React Context component that supplies values to all its child components. When a Provider is present, its value overrides the default value defined in `createContext()`, and `useContext()` returns the Provider's value instead of the default value.
+
+
+Simple memory trick:
+
+createContext() → Creates default value
+
+Provider → Replaces/Overrides default value
+
+useContext() → Reads the nearest Provider value
+
+So in your code:
+
+createContext({ user: "Adarsh Reddy" })
+
+Default value = Adarsh Reddy
+
+<UserContext.Provider value={{ user: "Adarsh M" }}>
+
+Provider value = Adarsh M
+
+useContext(UserContext)
+
+Output = Adarsh M (because Provider overrides the default value).
