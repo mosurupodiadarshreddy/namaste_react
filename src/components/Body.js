@@ -64,7 +64,7 @@ const Body = () => {
           Top Products
         </button>
 
-        <div>
+        {/* <div>
           <label>
             Username : 
             <input className="border border-black" 
@@ -73,7 +73,7 @@ const Body = () => {
               setUsername(e.target.value)
             } />
           </label>
-        </div>
+        </div> */}
 
         <button  className="px-5 py-2 rounded-xl border border-gray-300 bg-white text-gray-700 font-medium shadow-sm hover:bg-gray-100 hover:scale-105 transition duration-300"
           onClick={function () {
@@ -108,11 +108,11 @@ const Body = () => {
 
         </div>
 
-        <div>
+        {/* <div>
            <button className="bg-lime-950 px-4 py-2 rounded-full text-white font-semibold hover:bg-lime-900">
             Cart 🛒
           </button>
-        </div>
+        </div> */}
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 px-6 py-6">
