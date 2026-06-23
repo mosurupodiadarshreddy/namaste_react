@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import useOnlineStatus from "../utils/useOnlineStatus";
 import UserContext from "../utils/UserContext";
 import { useContext } from "react";
+import { useSelector } from "react-redux";
+
 const Header = () => {
     // let btnName = "Login";
     const [btnName,setBtnName]= useState("Login");
@@ -12,6 +14,9 @@ const Header = () => {
     const onlineStatus = useOnlineStatus();
 
     const {user,role} = useContext(UserContext);
+
+    //subscribing to store by useSelector
+    const cartItems = useSelector((store) => store.cart.items);
 
     return (
         <div className="flex items-center justify-between bg-black px-6 py-3 shadow-lg">
@@ -33,7 +38,7 @@ const Header = () => {
                     <li className="hover:text-yellow-300"><Link to="/email">Email</Link></li>
                     {/* <li className="hover:text-yellow-300"><Link to="/cart">Cart</Link></li> */}
                     <li className="hover:text-yellow-300"><Link to="/grocery"> Grocery </Link></li>
-                    <li className="hover:text-yellow-300"><Link to="/cart"> Cart </Link></li>
+                    <li className="hover:text-yellow-300"><Link to="/cart"> Cart {cartItems.length} Items</Link></li>
                     <li className="hover:text-yellow-300"><Link to="/"> Home </Link></li>   
                     <li className="hover:text-yellow-300"><Link to="/"> User : {user} </Link></li>
 

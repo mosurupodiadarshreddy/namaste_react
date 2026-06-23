@@ -1,11 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addItem } from "../utils/cartSlice";
 
 const Restaurantcard = ({ restaurantdata }) => {
   console.log(restaurantdata);
 
   const {id, title, price, rating, brand, category, thumbnail } =
     restaurantdata || {};
+
+  const dispatch = useDispatch();
+
+    const handleAddItem = (restaurantdata) => {
+      dispatch(addItem(restaurantdata));
+    };
 
   return (
     <div className="bg-white rounded-2xl overflow-hidden shadow-md border border-gray-200 p-4">  
@@ -35,7 +43,7 @@ const Restaurantcard = ({ restaurantdata }) => {
         ₹ {price}
       
 
-        <button className=" bg-orange-500 hover:bg-orange-600 text-white font-semibold font-extralight py-1 px-2 rounded-full">
+        <button className=" bg-orange-500 hover:bg-orange-600 text-white font-semibold font-extralight py-1 px-2 rounded-full" onClick={() => {handleAddItem(restaurantdata)}}>
          Add To Cart 🛒
         </button>
       
