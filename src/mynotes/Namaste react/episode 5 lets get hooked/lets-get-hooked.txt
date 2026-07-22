@@ -13,6 +13,8 @@ React Hooks :::
 
 1)import usestate from react and we should import it like as named import import { usestate } from react;
 2)that usestate maintains the state of component,
+useState is a built-in React Hook, so we don't install it separately. It comes with the react package. 
+Once React is installed, we import useState from "react" and use it inside our function components.
 3)create variable like usestate();
 4)const [listofrestaurants] = usestate(); ----- it is called state variable 
 5)inside usesate(default value) it means when ever react component renders by default we will give some value for that variable 
@@ -225,7 +227,8 @@ The actual browser DOM that users see and interact with.
 
 🎯 One-Line Interview Answer
 
-React uses a Virtual DOM to keep UI updates fast. When state changes, React creates a new Virtual DOM, compares it with the old one using a diff algorithm, and updates only the changed parts of the real DOM.
+React uses a Virtual DOM to keep UI updates fast. When state changes, React creates a new Virtual DOM, compares it with the old one using a diff algorithm,
+ and updates only the changed parts of the real DOM.
 
 
 📱 Daily Life Example: Mobile Phone Contacts Edit

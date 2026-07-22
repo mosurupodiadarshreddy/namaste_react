@@ -1,0 +1,1368 @@
+🔥 Higher-Order Component — Your Interview Answer
+
+If the interviewer asks, “What is a Higher-Order Component?”, you can say:
+
+A Higher-Order Component is a function that takes a component as input and returns a new enhanced component. 
+It is mainly used to reuse common functionality or add additional behavior/UI to an existing component without modifying the original component.
+
+Then immediately give your example:
+
+For example, in an e-commerce application, I may have a reusable ProductCard component that is used to display 80–90 products using map(). 
+Now suppose some products have an offer and I want to display an Offer label only on those cards. Instead of modifying or duplicating the original ProductCard component,
+ I can create a Higher-Order Component such as withOfferLabel(ProductCard). This HOC takes the original ProductCard, adds the Offer label, passes the original props to ProductCard,
+ and returns an enhanced component. While mapping the products, based on the offer condition, I render either the enhanced OfferProductCard or the normal ProductCard.
+
+basic syntax : 
+const withOfferLabel = (ProductCard) => {
+    return (props) => {
+        return (
+            <div>
+                <label>🎉 Offer</label>
+                <ProductCard {...props} />
+            </div>
+        );
+    };
+};
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Accordion : 
+
+
+Accordion is a UI behavior where content can be expanded and collapsed. For example, in an e-commerce application, we may have categories such as Biscuits and Chocolates. 
+When the user clicks Biscuits, its corresponding items are expanded and displayed, and when the user clicks it again, the content is collapsed. 
+In React, we can implement this using a state variable such as isOpen. Initially, we can keep isOpen as false. When the user clicks the heading, we toggle the state. 
+Since the state changes, React re-renders the component. Using conditional rendering, when isOpen is true we display the content, and when it is false we hide the content.
+
+The basic implementation is:
+
+const Accordion = () => {
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <div>
+
+            <h2 onClick={() => setIsOpen(!isOpen)}>
+                Biscuits
+            </h2>
+
+            {isOpen && (
+                <div>
+                    <p>Oreo</p>
+                    <p>Good Day</p>
+                    <p>Marie Gold</p>
+                </div>
+            )}
+
+        </div>
+    );
+};
+
+The complete connection is:
+
+Initially
+isOpen = false
+      ↓
+Biscuits content hidden
+
+User clicks Biscuits
+      ↓
+setIsOpen(!isOpen)
+      ↓
+false → true
+      ↓
+State changes
+      ↓
+Component re-renders
+      ↓
+Conditional rendering checks isOpen
+      ↓
+true
+      ↓
+Biscuits content displayed
+
+
+User clicks again
+      ↓
+true → false
+      ↓
+Re-render
+      ↓
+Content hidden
+
+So yes — Concept 1: Accordion ✅
+
+And notice how beautifully your previous React concepts are already working here:
+
+useState → State Change → Re-render → Conditional Rendering → Accordion UI
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1️⃣ Uncontrolled Component
+
+Take the Accordion we just created:
+
+const Accordion = () => {
+
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <div>
+            <h2 onClick={() => setIsOpen(!isOpen)}>
+                Biscuits
+            </h2>
+
+            {isOpen && (
+                <div>
+                    <p>Oreo</p>
+                    <p>Good Day</p>
+                    <p>Marie Gold</p>
+                </div>
+            )}
+        </div>
+    );
+};
+
+Now look at one important thing: const [isOpen, setIsOpen] = useState(false);
+
+Where is this state : It is inside the Accordion component itself.
+
+And who changes it?
+
+Again, Accordion itself:
+
+onClick={() => setIsOpen(!isOpen)}
+
+So the Accordion is basically saying:
+
+"I have my own state. I know whether I am open or closed. When somebody clicks me, I will update my own state."
+
+The parent component is not controlling this isOpen state.
+
+That is the important idea behind our uncontrolled Accordion.
+
+Now imagine three Accordion components
+
+Our parent renders:
+
+const App = () => {
+    return (
+        <div>
+            <Accordion title="Biscuits" />
+            <Accordion title="Chocolates" />
+            <Accordion title="Drinks" />
+        </div>
+    );
+};
+
+Every Accordion has its own state:
+
+                    App
+                     │
+          ┌──────────┼──────────┐
+          ↓          ↓          ↓
+      Biscuits   Chocolates    Drinks
+          │          │          │
+       isOpen      isOpen      isOpen
+        false       false       false
+
+Now click Biscuits:
+
+Biscuits   → isOpen = true
+Chocolates → isOpen = false
+Drinks     → isOpen = false
+
+Result:
+
+▼ Biscuits
+    Oreo
+    Good Day
+    Marie Gold
+
+▶ Chocolates
+
+▶ Drinks
+
+Now click Chocolates.
+
+Chocolates controls its own state:
+
+Biscuits   → true
+Chocolates → true
+Drinks     → false
+
+Therefore:
+
+▼ Biscuits
+    Oreo
+    Good Day
+
+▼ Chocolates
+    Dairy Milk
+    KitKat
+
+▶ Drinks
+
+Both can remain open.
+
+Why?
+
+Because Biscuits doesn't know what happened inside Chocolates.Chocolates doesn't know what happened inside Biscuits.Every Accordion is independently controlling its own state.
+
+⭐ That's the key point
+Parent
+  │
+  ↓
+Accordion
+  │
+  ├── owns isOpen
+  │
+  ├── owns setIsOpen
+  │
+  └── decides open/close itself
+
+So in the component-design sense we're discussing:
+
+An uncontrolled component manages the relevant state internally by itself instead of having that state controlled by its parent.
+
+🎯 Interview Example
+
+You can say:
+
+For example, consider an Accordion component. If every Accordion maintains its own isOpen state internally and changes that state when the user clicks it, 
+the parent does not control whether that Accordion is open or closed. Each Accordion independently manages its own state, so we can describe it as uncontrolled in this scenario.
+
+🧠 One Golden Line
+
+Uncontrolled Component → Child owns and manages its own state.
+
+That's all you need to understand Uncontrolled Component for our Accordion story.
+
+The problem becomes interesting when the requirement changes to:
+
+⭐⭐⭐⭐⭐⭐"I have 10 Accordions, but at any time ONLY ONE should be open."
+
+Our current uncontrolled design cannot centrally coordinate that behavior easily because every child owns a separate isOpen state.
+
+That exact problem will take us to Controlled Components.
+
+
+⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐controlled componenets 
+
+Controlled Accordion — Complete Example
+1️⃣ Parent Component
+
+The parent contains three Accordion children.
+
+import React, { useState } from "react";
+import Accordion from "./Accordion";
+
+const Parent = () => {
+
+    const [openIndex, setOpenIndex] = useState(null);
+
+    return (
+        <div>
+
+            {/* First Child */}
+            <Accordion
+                title="Biscuits"
+                isOpen={openIndex === 0}
+                handleClick={() => setOpenIndex(0)}
+            />
+
+            {/* Second Child */}
+            <Accordion
+                title="Chocolates"
+                isOpen={openIndex === 1}
+                handleClick={() => setOpenIndex(1)}
+            />
+
+            {/* Third Child */}
+            <Accordion
+                title="Drinks"
+                isOpen={openIndex === 2}
+                handleClick={() => setOpenIndex(2)}
+            />
+
+        </div>
+    );
+};
+
+export default Parent;
+2️⃣ Child Component — Accordion
+
+The same child component is reused three times.
+
+import React from "react";
+
+const Accordion = ({ title, isOpen, handleClick }) => {
+
+    return (
+        <div>
+
+            <h2 onClick={handleClick}>
+                {title}
+            </h2>
+
+            {isOpen && (
+                <div>
+                    <p>{title} content is displayed here</p>
+                </div>
+            )}
+
+        </div>
+    );
+};
+
+export default Accordion;
+
+Now we have the complete code. Let's understand the movie.
+
+🔥 Initial Render
+
+The parent state starts with:
+
+const [openIndex, setOpenIndex] = useState(null);
+
+So:
+
+openIndex = null
+
+Now React renders the first child:
+
+isOpen={openIndex === 0}
+
+which becomes:
+
+null === 0
+↓
+false
+
+First child receives:
+
+title = "Biscuits"
+isOpen = false
+
+Second child:
+
+isOpen={openIndex === 1}
+
+becomes:
+
+null === 1
+↓
+false
+
+Second child receives:
+
+title = "Chocolates"
+isOpen = false
+
+Third child:
+
+isOpen={openIndex === 2}
+
+becomes:
+
+null === 2
+↓
+false
+
+Third child receives:
+
+title = "Drinks"
+isOpen = false
+
+Therefore UI initially looks like:
+
+▶ Biscuits
+
+▶ Chocolates
+
+▶ Drinks
+
+Nothing is open.
+
+🔥 Now You Click SECOND Accordion — Chocolates
+
+This is the important part.
+
+For the second child, parent passed:
+
+<Accordion
+    title="Chocolates"
+    isOpen={openIndex === 1}
+    handleClick={() => setOpenIndex(1)}
+/>
+
+Notice its handleClick:
+
+handleClick={() => setOpenIndex(1)}
+
+The parent has specifically associated the number 1 with the second Accordion.
+
+Now inside the child:
+
+<h2 onClick={handleClick}>
+    {title}
+</h2>
+
+You click:
+
+Chocolates
+
+Therefore:
+
+handleClick()
+
+executes.
+
+But what exactly is handleClick for this second child?
+
+This:
+
+() => setOpenIndex(1)
+
+Therefore:
+
+setOpenIndex(1)
+
+happens.
+
+🔥 Parent State Changes
+
+Previously:
+
+openIndex = null
+
+Now:
+
+openIndex = 1
+
+Why 1?
+
+Because the second Accordion's callback specifically set 1.
+
+So now parent knows:
+
+openIndex = 1
+
+means
+
+SECOND ACCORDION IS SELECTED
+
+State changed, therefore:
+
+Parent state changes
+        ↓
+Parent re-renders
+🔥 During Re-render, All Three Are Checked Again
+
+Now:
+
+openIndex = 1
+First Accordion — Biscuits
+isOpen={openIndex === 0}
+
+becomes:
+
+1 === 0
+↓
+false
+
+So:
+
+Biscuits → isOpen = false
+Second Accordion — Chocolates
+isOpen={openIndex === 1}
+
+becomes:
+
+1 === 1
+↓
+TRUE ✅
+
+So:
+
+Chocolates → isOpen = true
+Third Accordion — Drinks
+isOpen={openIndex === 2}
+
+becomes:
+
+1 === 2
+↓
+false
+
+So:
+
+Drinks → isOpen = false
+🔥 Now Children Receive These Values
+Biscuits
+   ↓
+isOpen = false
+   ↓
+Don't show content
+
+
+Chocolates
+   ↓
+isOpen = TRUE
+   ↓
+SHOW CONTENT ✅
+
+
+Drinks
+   ↓
+isOpen = false
+   ↓
+Don't show content
+
+Therefore UI becomes:
+
+▶ Biscuits
+
+▼ Chocolates
+    Chocolates content is displayed here
+
+▶ Drinks
+Now Suppose You Click Drinks
+
+Third child has:
+
+handleClick={() => setOpenIndex(2)}
+
+So clicking Drinks:
+
+setOpenIndex(2)
+       ↓
+openIndex = 2
+       ↓
+Parent re-renders
+
+Now:
+
+Biscuits:
+
+2 === 0 → false
+
+
+Chocolates:
+
+2 === 1 → false
+
+
+Drinks:
+
+2 === 2 → TRUE ✅
+
+Therefore:
+
+▶ Biscuits
+
+▶ Chocolates
+
+▼ Drinks
+    Drinks content is displayed here
+
+Notice something important:
+
+Chocolates automatically closed.
+
+We didn't manually write:
+
+Close Chocolates
+
+Because once:
+
+openIndex = 2
+
+this automatically becomes false:
+
+openIndex === 1
+
+That's how only one Accordion stays open at a time.
+
+⭐ Why 0, 1, 2?
+
+Nothing special about these numbers.
+
+We simply decided:
+
+0 → First Child  → Biscuits
+
+1 → Second Child → Chocolates
+
+2 → Third Child  → Drinks
+
+They are just identifiers.
+
+The important idea is:
+
+Child clicked
+      ↓
+That child's callback runs
+      ↓
+Its identifier is stored
+in Parent state
+      ↓
+Parent re-renders
+      ↓
+Parent compares identifier
+with every child
+      ↓
+Matching child → true
+Others → false
+⭐ Controlled Component Concept
+
+Now you can see why this is called controlled.
+
+The child does NOT have:
+
+const [isOpen, setIsOpen] = useState(false);
+
+Instead:
+
+             PARENT
+                ↓
+        owns openIndex state
+                ↓
+      decides which child opens
+                ↓
+      passes isOpen through props
+          /      |       \
+         ↓       ↓        ↓
+     Biscuits Chocolates Drinks
+
+So:
+
+The parent owns the state and controls which Accordion should be open. Therefore, these Accordion children are controlled by their parent.
+
+And moving the state from the individual Accordion children into their common parent is the concept we call Lifting State Up.
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Lifting state up
+Moving the state from a child component to its common parent so that the parent can control and share that state with multiple children.
+
+In our Accordion example, initially every child had its own state:
+
+const Accordion = () => {
+    const [isOpen, setIsOpen] = useState(false);
+}
+
+Then, because we wanted the parent to control which Accordion is open, we lifted that state up into the parent:
+
+const Parent = () => {
+    const [openIndex, setOpenIndex] = useState(null);
+}
+
+Now the child cannot directly modify the parent's state. Instead, the parent passes a callback function to the child through props:
+
+<Accordion
+    isOpen={openIndex === 1}
+    handleClick={() => setOpenIndex(1)}
+/>
+
+The child calls that function:
+
+<h2 onClick={handleClick}>
+    Chocolates
+</h2>
+
+So the flow is:
+
+State originally inside Child
+        ↓
+Move state to Parent
+        ↓
+THIS is LIFTING STATE UP
+        ↓
+Parent owns the state
+        ↓
+Parent passes value + callback through props
+        ↓
+Child calls callback
+        ↓
+Parent state gets updated
+        ↓
+Parent re-renders
+        ↓
+Updated value goes back to children through props
+⭐ Interview Definition
+
+Lifting State Up means moving state from child components to their nearest common parent so that the parent can control and share the state between multiple children. 
+The parent can pass the state and callback functions to the children through props.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+📘 React DevTools Profiler — Simple Explanation
+
+React DevTools is a Chrome extension used to inspect and debug React applications.
+It provides a Components tab, where we can see the complete component tree and inspect each component's props, state, and hooks.
+It also provides a Profiler tab, which is mainly used to check rendering performance.
+We can start recording in the Profiler, perform some actions in our application, and then stop recording.
+The Profiler shows us which components rendered/re-rendered and how much time they took to render.
+For example, if changing a search input unnecessarily re-renders 50 RestaurantCard components, we can identify it through the Profiler.
+Based on this information, we can optimize unnecessary re-renders using techniques such as React.memo, useMemo, and useCallback.
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+📘 Props Drilling in React
+❓ What is Props Drilling?
+
+Props Drilling is the process of passing data from a parent component to a deeply nested child component through multiple intermediate components using props.
+
+The main issue is that some intermediate components may not need that data themselves, but they still have to receive it and forward it to the next child.
+
+🌍 Simple Real-Time Example
+
+Consider an e-commerce application with this component structure:
+
+HomePage
+   ↓
+ProductPage
+   ↓
+PaymentPage
+
+Suppose HomePage has the logged-in user's information:
+
+const user = "Adarsh";
+
+The PaymentPage needs this user information.
+
+But ProductPage doesn't need the user information at all.
+
+Still, because PaymentPage is inside ProductPage, we have to pass the data through ProductPage.
+
+HomePage
+   │
+   │ user="Adarsh"
+   ↓
+ProductPage        ← Doesn't need user ❌
+   │
+   │ user="Adarsh" ← Still has to forward it
+   ↓
+PaymentPage        ← Actually needs user ✅
+
+This process is called Props Drilling.
+
+💻 Example
+Parent — HomePage
+const HomePage = () => {
+
+    const user = "Adarsh";
+
+    return (
+        <ProductPage user={user} />
+    );
+};
+
+Here, HomePage passes user to ProductPage.
+
+Intermediate Component — ProductPage
+const ProductPage = ({ user }) => {
+
+    return (
+        <div>
+            <h1>Product Details</h1>
+
+            <PaymentPage user={user} />
+        </div>
+    );
+};
+
+The important thing here is:
+
+ProductPage doesn't actually need user.
+
+But it still has to:
+
+const ProductPage = ({ user })
+
+receive it, and then:
+
+<PaymentPage user={user} />
+
+forward it.
+
+Deep Child — PaymentPage
+const PaymentPage = ({ user }) => {
+
+    return (
+        <div>
+            <h1>Payment</h1>
+            <h2>Welcome {user}</h2>
+        </div>
+    );
+};
+
+Finally, PaymentPage receives and uses the data.
+
+🔥 Complete Flow
+HomePage
+   ↓
+Has user information
+user = "Adarsh"
+   ↓
+Pass through props
+   ↓
+ProductPage
+   ↓
+Doesn't require user
+BUT still receives it
+   ↓
+Again forwards through props
+   ↓
+PaymentPage
+   ↓
+Actually requires user
+   ↓
+Uses user information
+
+This becomes more problematic when the component tree is deeper:
+
+App
+ ↓
+HomePage
+ ↓
+ProductPage
+ ↓
+ProductDetails
+ ↓
+Checkout
+ ↓
+PaymentPage
+
+If only PaymentPage needs the data, all the components in between may still have to forward that prop.
+
+❓ Why can Props Drilling become a problem?
+
+Props themselves are not bad. Passing data from parent to child is a fundamental React pattern.
+
+The problem appears when data has to travel through many intermediate components that don't actually need it.
+
+For example:
+
+Parent
+  ↓ props
+Child A       ← doesn't need it
+  ↓ props
+Child B       ← doesn't need it
+  ↓ props
+Child C       ← doesn't need it
+  ↓ props
+Child D       ← finally needs it
+
+As an application grows, excessive props drilling can make the component relationships more coupled and harder to maintain, because changing how shared data is passed may require changes across several intermediate components.
+
+⭐ Interview Answer
+
+Props Drilling is the process of passing data from a parent component to a deeply nested child component through multiple intermediate components using props. Sometimes those intermediate components don't need the data themselves, but they still have to receive and forward it to their children. For example, if a HomePage contains user information that is required by a deeply nested PaymentPage, components such as ProductPage in between may have to receive and forward the user prop even though they don't use it. This unnecessary passing through multiple levels is called props drilling.
+
+🧠 Golden Line
+
+Parent has the data → Deep child needs the data → Intermediate components don't need it but still have to receive and forward it = Props Drilling.
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+1. Start with our normal application
+
+Suppose our App.jsx has:
+
+const App = () => {
+    return (
+        <div>
+            <Header />
+            <Body />
+            <Footer />
+        </div>
+    );
+};
+
+Our component tree looks like:
+
+                App
+              /  |   \
+             /   |    \
+        Header  Body  Footer
+                 |
+          RestaurantCard
+                 |
+            PaymentPage
+
+Now suppose App has logged-in user information:
+
+const App = () => {
+
+    const user = "Adarsh";
+
+    return (
+        <div>
+            <Header />
+            <Body />
+            <Footer />
+        </div>
+    );
+};
+
+And suppose:
+
+Header needs user
+RestaurantCard doesn't need user
+PaymentPage needs user
+
+Without Context API, we may start passing:
+
+<Body user={user} />
+
+Then:
+
+<RestaurantCard user={user} />
+
+Then:
+
+<PaymentPage user={user} />
+
+Even though Body and RestaurantCard may not need user, they have to carry it down.
+
+That's our:
+
+Props Drilling
+
+2. React gives us Context API
+
+Now our requirement is basically:
+
+"I have this user information. Instead of manually passing it through every component, can I make it available to the components under a particular part of my component tree?"
+
+React says:
+
+Yes — create a Context.
+
+So we create:
+
+import { createContext } from "react";
+
+const UserContext = createContext();
+
+This:
+
+createContext()
+
+is a function provided by React.
+
+It returns a Context object.
+
+We store that object in:
+
+UserContext
+
+So understand only this much:
+
+createContext()
+      ↓
+React creates a Context object
+      ↓
+We store that object in
+      ↓
+UserContext
+
+Therefore:
+
+const UserContext = createContext();
+
+does NOT mean:
+
+UserContext = React Component ❌
+
+It means:
+
+UserContext = Context Object ✅
+3. Why do we normally create UserContext.js?
+
+Usually we create a separate file:
+
+utils/
+   UserContext.js
+
+Inside:
+
+import { createContext } from "react";
+
+const UserContext = createContext();
+
+export default UserContext;
+
+Why separate file?
+
+Because multiple components may need the same Context object.
+
+For example:
+
+App.jsx
+Header.jsx
+Body.jsx
+PaymentPage.jsx
+
+can all import:
+
+import UserContext from "./UserContext";
+
+So they are all referring to the same context.
+
+4. Now come back to App.jsx
+
+Suppose:
+
+const App = () => {
+
+    const user = "Adarsh";
+
+    return (
+        <div>
+            <Header />
+            <Body />
+            <Footer />
+        </div>
+    );
+};
+
+We created UserContext, but currently it doesn't magically know:
+
+user = "Adarsh"
+
+We need to provide a value to that context for part of our component tree.
+
+That's where the Provider concept comes.
+
+Conceptually:
+
+<UserContext.Provider value={user}>
+
+    <Header />
+    <Body />
+    <Footer />
+
+</UserContext.Provider>
+
+Now visualize this carefully:
+
+                 App
+                  |
+        UserContext.Provider
+          value = "Adarsh"
+                  |
+          -------------------
+          |        |        |
+        Header    Body    Footer
+                   |
+             RestaurantCard
+                   |
+              PaymentPage
+
+This is the first major Context API concept.
+
+The Provider is basically saying:
+
+"For the component tree underneath me, I am providing this UserContext value as Adarsh."
+
+5. Which components can access this Context?
+
+Look at this:
+
+<UserContext.Provider value={user}>
+
+    <Header />
+    <Body />
+    <Footer />
+
+</UserContext.Provider>
+
+All of these are inside the Provider's subtree.
+
+Therefore components under this Provider can potentially consume this context:
+
+UserContext.Provider
+       |
+       ├── Header ✅
+       |
+       ├── Body ✅
+       |     |
+       |     └── RestaurantCard ✅
+       |              |
+       |              └── PaymentPage ✅
+       |
+       └── Footer ✅
+
+But this doesn't mean all of them automatically receive user as props.
+
+That's the beauty.
+
+Body doesn't need user?
+
+Do nothing.
+
+RestaurantCard doesn't need user?
+
+Do nothing.
+
+PaymentPage needs user?
+
+Then only PaymentPage reads the context.
+
+6. How does PaymentPage read it?
+
+That's where:
+
+useContext()
+
+comes.
+
+Inside PaymentPage:
+
+import { useContext } from "react";
+import UserContext from "./UserContext";
+
+const PaymentPage = () => {
+
+    const user = useContext(UserContext);
+
+    return (
+        <h1>Welcome {user}</h1>
+    );
+};
+
+This line:
+
+const user = useContext(UserContext);
+
+basically asks React:
+
+"For this UserContext, what value is available to me from the nearest matching Provider above me?"
+
+React goes upward in the component tree:
+
+PaymentPage
+     ↑
+RestaurantCard
+     ↑
+Body
+     ↑
+UserContext.Provider
+value = "Adarsh"
+     ↑
+FOUND ✅
+
+Therefore:
+
+const user = useContext(UserContext);
+
+gets:
+
+"Adarsh"
+🔥 NOW your remembered "nearest Context" story
+
+This is the important thing you remembered from Akshay's video.
+
+Suppose we have this:
+
+<UserContext.Provider value="Adarsh">
+
+    <Header />
+
+    <UserContext.Provider value="Reddy">
+        <Body />
+    </UserContext.Provider>
+
+    <Footer />
+
+</UserContext.Provider>
+
+Now there are two Providers for the same UserContext.
+
+Visualize:
+
+        UserContext.Provider
+          value="Adarsh"
+               |
+       ------------------
+       |        |       |
+     Header   INNER    Footer
+              Provider
+           value="Reddy"
+                |
+               Body
+
+Now suppose Header does:
+
+const user = useContext(UserContext);
+
+React looks upward.
+
+Nearest matching Provider:
+
+Header
+   ↑
+UserContext.Provider
+value="Adarsh"
+
+Therefore:
+
+Header gets → "Adarsh"
+
+But suppose Body does:
+
+const user = useContext(UserContext);
+
+React looks upward:
+
+Body
+ ↑
+UserContext.Provider
+value="Reddy"
+ ↑
+FOUND immediately
+
+It doesn't continue searching for the outer "Adarsh" value.
+
+Therefore:
+
+Body gets → "Reddy"
+
+🔥 This is the nearest Provider concept you remembered.
+
+7. Complete Context API Story
+
+Now connect everything:
+
+PROBLEM
+Props Drilling
+      ↓
+Data has to pass through components
+that don't even need it
+      ↓
+
+SOLUTION
+Context API
+      ↓
+
+createContext()
+      ↓
+Creates Context Object
+      ↓
+UserContext
+      ↓
+
+UserContext.Provider
+      ↓
+Provides a value to its subtree
+      ↓
+
+Components inside that subtree
+can access the context
+      ↓
+
+Component that actually needs data
+calls:
+
+useContext(UserContext)
+      ↓
+
+React finds the NEAREST
+matching UserContext Provider
+above that component
+      ↓
+
+Returns that Provider's value
+⭐ The 3 things you must remember
+1. createContext()
+const UserContext = createContext();
+
+Creates the Context object.
+
+2. Provider
+<UserContext.Provider value={user}>
+    <App />
+</UserContext.Provider>
+
+Provides a context value to the component subtree below it.
+
+3. useContext()
+const user = useContext(UserContext);
+
+Reads the value from the nearest matching Context Provider above that component.
+
+🎯 Interview Answer
+
+Context API is a React feature used to share data across a component tree without manually passing props through every intermediate component, which helps avoid props drilling. First, we create a Context object using createContext(). Then we provide a value to a part of the component tree using the Context Provider. Any component inside that Provider's subtree that needs the data can access it using the useContext() Hook. useContext() reads the value from the nearest matching Provider above that component in the component tree.
+
+🔥 Golden Flow
+
+createContext() → Create Context
+
+Provider → Provide Value
+
+useContext() → Consume Value from nearest Provider
+
+If a component is not inside any matching UserContext.Provider, it cannot get a value provided by that Provider.
+
+For example:
+
+<UserContext.Provider value="Adarsh">
+    <Header />
+    <Body />
+</UserContext.Provider>
+
+<Footer />
+
+Component tree:
+
+        UserContext.Provider
+          value = "Adarsh"
+              |
+        --------------
+        |            |
+      Header        Body
+        ✅            ✅
+
+
+      Footer
+        ❌
+   Outside Provider
+
+So if Header does:
+
+const user = useContext(UserContext);
+
+it gets:
+
+"Adarsh" ✅
+
+If Body does:
+
+const user = useContext(UserContext);
+
+it also gets:
+
+"Adarsh" ✅
+
+But Footer is outside that Provider. Therefore it cannot receive "Adarsh" from that Provider.
+
+There is one technical detail: if you originally created the context with a default value:
+
+const UserContext = createContext("Guest");
+
+then an outside component doing:
+
+const user = useContext(UserContext);
+
+will get:
+
+"Guest"
+
+because React couldn't find a matching Provider above it, so it uses the default value given to createContext().
+
+So remember:
+
+useContext() searches upward for the nearest matching Provider. If it finds one → gets that Provider's value. If it finds none → gets the default value passed to createContext().
+
+Context Consumer is used to consume/read the value provided by the nearest Context Provider. In modern functional React, 
+we commonly use the useContext() hook instead of Context.Consumer.
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -37,7 +37,7 @@ const Header = () => {
                     {/* <li className="hover:text-yellow-300"><Link to="/contact">Contactus</Link></li> */}
                     {/* <li className="hover:text-yellow-300"><Link to="/email">Email</Link></li> */}
                     {/* <li className="hover:text-yellow-300"><Link to="/cart">Cart</Link></li> */}
-                    {/* <li className="hover:text-yellow-300"><Link to="/grocery"> Grocery </Link></li> */}
+                    <li className="hover:text-yellow-300"><Link to="/grocery"> Grocery </Link></li>
                     <li className="hover:text-yellow-300"><Link to="/cart"> Cart {cartItems.length} Items</Link></li>
                     <li className="hover:text-yellow-300"><Link to="/"> Home </Link></li>   
                     <li className="hover:text-yellow-300"><Link to="/"> User : {user} </Link></li>

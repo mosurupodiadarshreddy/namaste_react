@@ -1,0 +1,932 @@
+when ever u see keyword with use means it is hook ⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐⭐
+
+0001 — Why Do We Need Routing in React? 
+
+Imagine our application initially has only one page as homepage and when we run it it renders that page and eventually in our application the pages/componnets got increased
+for example login - homepage - aboutpage - contactpage - cartpage like this so we can technically build navigation without React Router using state and conditional rendering. 
+The question is why that becomes a problem as the application grows.
+
+Take your exact example. Initially:
+
+function App() {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    if (isLoggedIn) {
+        return <HomePage />;
+    } else {
+        return <LoginPage />;
+    }
+}
+
+This works perfectly.
+isLoggedIn = false → <LoginPage /> → User enters credentials → API validates credentials → setIsLoggedIn(true) → Component re-renders → isLoggedIn = true → <HomePage />
+
+
+So far, we don't need a router just for this conditional UI.
+
+Now suppose the application grows: Login - Home - About - Contact - Cart - Profile - Orders - Settings
+
+You could still manage this manually. For example:
+
+const [currentPage, setCurrentPage] = useState("home");
+
+if (currentPage === "home") {
+    return <Home />;
+}
+
+if (currentPage === "about") {
+    return <About />;
+}
+
+if (currentPage === "cart") {
+    return <Cart />;
+}
+
+if (currentPage === "contact") {
+    return <Contact />;
+}
+
+And clicking About:
+
+<button onClick={() => setCurrentPage("about")}>
+    About
+</button>
+
+This will work.But now look at the browser URL.You might still have:myapp.com
+
+Whether you're seeing:Home,About,Cart,Contact
+your application is only switching components based on your own state. You haven't created meaningful URL-based navigation.
+That's the real problem. Suppose I'm looking at your Cart page and I want to share it with my friend. Ideally, I should share: myapp.com/cart 
+
+ Or I'm viewing an order:  myapp.com/orders/123  Or a restaurant: myapp.com/restaurants/456 
+ 
+Now the URL itself represents where the user is in the application.
+
+That's where routing becomes valuable.
+
+WITHOUT ROUTING : myapp.com → currentPage state = "cart" → <Cart />
+WITH ROUTING : myapp.com/cart → Router sees /cart → <Cart />
+
+Now I can directly type: myapp.com/cart and reach the Cart page.I can bookmark it. I can share it. Browser Back and Forward navigation can work naturally with navigation history. 
+I can refresh a particular route and, with the server configured correctly for an SPA, return to that application location.
+
+Yes, we can manually switch components using state and conditional rendering without a routing library. This works for simple UI switching.
+ But as an application has multiple navigable pages/views, routing provides URL-based navigation, route-to-component mapping, browser history integration, 
+ nested and dynamic routes, and direct/bookmarkable/shareable locations. Authentication state such as isLoggedIn determines whether a user has access,
+ while routing determines which UI corresponds to the current URL.
+
+So don't think "Without Router, I cannot move from Home to About." You absolutely can.
+
+State/conditional rendering = Which UI should I show based on application data?
+
+Routing = Which UI should I show based on the current URL/location?
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+In React applications, routing can be implemented in different ways using React Router.
+ 1) One common approach is declarative routing using components such as <BrowserRouter>, <Routes>, and <Route>. 
+ 2) Another approach is the Data Router configuration API using createBrowserRouter() along with <RouterProvider>.
+In the application i worked, I used the createBrowserRouter() approach, so I am more familiar with this approach.
+
+so here 
+
+Approach 1 — The one you practiced: createBrowserRouter
+const appRouter = createBrowserRouter([
+    {
+        path: "/",
+        element: <AppLayout />,
+        children: [
+            {
+                path: "/",
+                element: <Body />
+            },
+            {
+                path: "/about",
+                element: <About />
+            }
+        ]
+    }
+]);
+
+Then:
+
+root.render(
+    <RouterProvider router={appRouter} />
+);
+
+What is createBrowserRouter()?
+
+createBrowserRouter() is a function provided by React Router DOM. We use it to create our router and define which URL should display which component.
+
+const appRouter = createBrowserRouter([
+    {
+        path: "/",
+        element: <Home />
+    },
+    {
+        path: "/about",
+        element: <About />
+    }
+]);
+
+So we are telling the router: / → Show Home and /about  → Show About
+
+We store this created router in: const appRouter = ... 
+
+2. How do we connect this router to our React application?
+
+We use the RouterProvider component, which also comes from React Router DOM: <RouterProvider router={appRouter} />
+ 
+We pass our created router:  appRouter to RouterProvider
+
+Then render it:
+
+root.render(
+    <RouterProvider router={appRouter} />
+);
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+React component renders/re-renders mainly when:
+
+Initial Render → When the component loads/mounts for the first time.
+State Changes → When the component's state is updated using a state setter like setState.
+Props Change → When the parent passes changed props to the child, the child re-renders.
+Parent Re-renders → By default, when a parent component re-renders, its child components are also rendered again.
+⭐ Simple Interview Answer
+
+A component renders initially when it mounts. It can re-render when its state changes, when it receives updated props, or when its parent re-renders.
+
+Remember:
+
+Initial Mount → State Change → Props Change → Parent Re-render 🔥
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ 
+What is errorElement? :: errorElement is used to provide a fallback UI when an error occurs for a route.
+
+For example:
+
+{
+    path: "/",
+    element: <AppLayout />,
+    errorElement: <Error />
+}
+
+The simple flow is:
+
+Route is being rendered/loaded
+        ↓
+An error occurs
+        ↓
+React Router catches the route error
+        ↓
+Normal route UI is replaced by
+        ↓
+<Error />
+
+Your Error component can be:
+
+const Error = () => {
+    return (
+        <div>
+            Oops! Something went wrong...
+        </div>
+    );
+};
+
+So instead of showing a broken application, we show a meaningful fallback UI.
+
+What is useRouteError()?
+
+useRouteError() is a React Router Hook that allows the error UI to access information about the error caught for the route.
+
+import { useRouteError } from "react-router-dom";
+
+const Error = () => {
+    const error = useRouteError();
+
+    return (
+        <div>
+            <h1>Oops! Something went wrong...</h1>
+            <p>
+                {error?.status} {error?.statusText}
+            </p>
+        </div>
+    );
+};
+
+One correction to your notes: don't think that every JavaScript error in the entire application automatically goes to errorElement.
+ errorElement acts as the error boundary for the relevant route tree and handles errors associated with that route's rendering and data APIs.
+
+Also, for an unmatched URL such as /randompage, with createBrowserRouter, React Router can surface its default 404-style route error to the applicable errorElement. A more explicit approach is also to define a catch-all route such as path: "*", especially when you want full control over your custom Not Found page.
+
+⭐ Interview answer
+
+In React Router, errorElement provides fallback UI when an error occurs in a route.
+ We can use the useRouteError() Hook inside the error component to access information about the error, such as its status and status text,
+ and display a meaningful error page to the user.
+
+So remember simply:
+
+errorElement = What UI should I show when the route has an error?
+
+useRouteError() = What error actually occurred?
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Nested Routing - <outlet/> - header and footer sticky concept 
+
+Nested Routing in React Router
+❓ What is Nested Routing?
+
+Nested Routing means we create a parent layout route that contains common components such as Header and Footer, while different child routes are rendered inside that layout.
+
+For example, our application should look like:
+
+Header
+----------------
+Home / About / Contact  ← Changes based on URL
+----------------
+Footer
+
+Here, the Header and Footer remain as common parts of the layout, while the middle content changes.
+
+❓ How do we create the common layout?
+
+We create an AppLayout component:
+
+const AppLayout = () => {
+    return (
+        <div className="app">
+            <Header />
+
+            <Outlet />
+
+            <Footer />
+        </div>
+    );
+};
+
+Here:
+
+<Header /> → Common Header
+<Footer /> → Common Footer
+<Outlet /> → Placeholder where the matched child route will render
+
+Think of <Outlet /> as an empty space reserved for child routes.
+
+AppLayout
+│
+├── Header
+│
+├── Outlet  ← Child component renders here
+│
+└── Footer
+❓ How do we configure Nested Routes?
+
+We define AppLayout as the parent route and provide the other pages inside children.
+
+const appRouter = createBrowserRouter([
+    {
+        path: "/",
+        element: <AppLayout />,
+
+        children: [
+            {
+                path: "/",
+                element: <Body />
+            },
+            {
+                path: "/about",
+                element: <About />
+            },
+            {
+                path: "/contact",
+                element: <Contactus />
+            }
+        ],
+
+        errorElement: <Error />
+    }
+]);
+
+Here:
+
+AppLayout
+   ↓
+Parent / Layout Route
+
+Body
+About
+Contactus
+   ↓
+Child / Nested Routes
+❓ What happens when the user changes the URL?
+
+If the user visits:
+
+/
+
+React Router renders:
+
+Header
+  ↓
+Body      ← Inside Outlet
+  ↓
+Footer
+
+If the user visits:
+
+/about
+
+React Router renders:
+
+Header
+  ↓
+About     ← Inside Outlet
+  ↓
+Footer
+
+If the user visits:
+
+/contact
+
+React Router renders:
+
+Header
+  ↓
+Contact   ← Inside Outlet
+  ↓
+Footer
+
+So the result is:
+
+| URL        | UI                        |
+| ---------- | ------------------------- |
+| `/`        | Header + Body + Footer    |
+| `/about`   | Header + About + Footer   |
+| `/contact` | Header + Contact + Footer |
+
+❓ What is <Outlet />?
+
+<Outlet /> is a component provided by React Router.
+
+It acts as a placeholder where the currently matched child route is rendered.
+
+<Header />
+
+<Outlet />
+
+<Footer />
+
+If the URL is /about:
+
+<Outlet />
+    ↓
+<About />
+
+If the URL is /contact:
+
+<Outlet />
+    ↓
+<Contactus />
+⭐ Golden Line
+
+Outlet is a placeholder inside the parent layout where the matched child route is rendered.
+
+🎯 Complete Flow
+RouterProvider
+      ↓
+appRouter
+      ↓
+"/" → AppLayout (Parent Layout)
+          │
+          ├── Header
+          │
+          ├── Outlet
+          │     │
+          │     ├── "/"        → Body
+          │     ├── "/about"   → About
+          │     └── "/contact" → Contact
+          │
+          └── Footer
+⭐ Interview Answer
+
+Nested Routing is used when we have a common layout containing components such as Header and Footer and want to render different child pages inside that layout. In my application, I created AppLayout as the parent route and defined Home, About, and Contact as child routes. I used <Outlet /> inside AppLayout as a placeholder where the matched child route is rendered. This allows the common layout to remain while the content inside the Outlet changes based on the current route.
+
+🔥 Easy Memory
+
+Parent Layout → children routes → <Outlet /> → Matched child renders there.
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Single page Application (SPA) : <link/> instead of <a> tag
+
+Yes, this is a very important React concept. This question is very common in interviews.
+
+You asked why we use Link instead of anchor tag and why anchor refreshes page — this is related to Single Page Application (SPA).
+
+Let’s understand clearly.
+
+1. Anchor Tag (<a>) Behavior
+
+Example: <a href="/about">About</a>
+
+What happens when you click anchor tag?
+Browser sends request to server and Server returns new HTML page so Entire page reloads and React app loads again All components reloaded and State resets 
+This is called Full Page Reload / Page Refresh So React loses its state and reloads everything.
+
+
+2. React Link (<Link>) Behavior
+
+Example: <Link to="/about">About</Link> ,import { Link } from "react-router-dom";
+ 
+What happens here?
+No request to server for new HTML page just React Router intercepts the navigation and Only component inside <Outlet /> changes so Header/Footer stay same 
+and Page does NOT refresh so  State is preserved Faster navigation This is called Client Side Routing
+
+3. Why Anchor Reloads but Link Doesn’t
+
+| Anchor Tag                | Link                       |
+| ------------------------- | -------------------------- |
+| Server side navigation    | Client side navigation     |
+| Full page reload          | No reload                  |
+| Browser requests new HTML | React just swaps component |
+| Slow                      | Fast                       |
+| State lost                | State preserved            |
+| Traditional websites      | React SPA                  |
+
+
+4. What is this concept called?
+
+Yes, you are correct.
+
+This concept is called: Single Page Application (SPA)
+
+Definition: A Single Page Application is a web application that loads a single HTML page and dynamically updates content without reloading the entire page.
+
+Examples:Gmail,Facebook,Instagram,Twitter Most React apps They don’t reload page — only content changes.
+
+5. How SPA Works Internally
+
+User clicks Link → React Router intercepts → URL changes → Matching Route found → Component inside Outlet changes → Page does NOT reload
+
+
+6. Interview Answer (Very Important)
+
+If interviewer asks:
+
+Why Link is used instead of anchor tag in React?
+
+Answer:
+
+In React we use Link instead of anchor tag because anchor tag reloads the entire page by making a new request to the server, 
+whereas Link uses client-side routing to navigate between pages without refreshing the page. This improves performance and provides a smoother user experience. 
+This concept is part of Single Page Application architecture.
+
+7. One Line Difference (Remember This)
+
+Anchor tag → Reloads page
+Link → Changes component without reloading
+
+8. Simple Analogy
+
+Think like this:
+
+Anchor tag → Closing book and opening new book
+Link → Turning page inside same book
+
+Final Summary
+
+| Concept      | Meaning                           |
+| ------------ | --------------------------------- |
+| Anchor tag   | Full page reload                  |
+| Link         | Client side navigation            |
+| React Router | Handles routing                   |
+| Outlet       | Where page loads                  |
+| SPA          | Single HTML page, dynamic content |
+
+Yes, correct observation ⭐
+React Router <Link> internally renders an <a> (anchor) tag, but the behavior is different from a normal anchor tag.
+
+Let’s explain clearly — this is a very common interview question.
+
+1. Normal Anchor Tag
+<a href="/about">About</a>
+
+What happens:
+
+Browser sends request to server
+Page reloads
+Entire React app reloads
+SPA advantage lost
+
+This is called full page reload navigation
+
+2. React Router Link
+<Link to="/about">About</Link>
+
+In DevTools you will see:
+
+<a href="/about">About</a>
+
+So yes — Link renders an anchor tag internally.
+
+But React Router prevents the default browser reload and uses client-side routing.
+
+Instead of reloading page, it:
+
+Prevents default anchor behavior
+Changes URL using History API
+React Router renders new component
+Page does NOT reload
+
+This is called SPA Navigation (Client-side routing)
+
+3. Internal Working (Important)
+
+Internally Link does something like this:
+
+<a
+  href="/about"
+  onClick={(e) => {
+    e.preventDefault();
+    window.history.pushState({}, "", "/about");
+  }}
+>
+  About
+</a>
+
+So:
+
+Anchor tag → for accessibility & SEO
+preventDefault() → stops reload
+pushState() → changes URL
+Router renders component
+
+
+4. Anchor vs Link Difference Table
+
+| Anchor `<a>`   | React Router `<Link>` |
+| -------------- | --------------------- |
+| Reloads page   | No reload             |
+| Server request | Client-side routing   |
+| Slow           | Fast                  |
+| Not SPA        | SPA                   |
+| Loses state    | Keeps state           |
+
+5. Interview Answer (Very Important)
+
+If interviewer asks:
+
+What is Link in React Router?
+
+Answer:
+
+Link is a component in React Router used for client-side navigation. Internally it renders an anchor tag, but it prevents the default page reload and uses the history API to update the URL and render components without refreshing the page.
+
+6. One Line Remember
+
+Link = Anchor tag + preventDefault + History API + SPA navigation
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Client-Side Routing vs Server-Side Routing — Interview Answer 
+
+Server-side routing means when a user navigates to another URL, the browser sends a request to the server. The server processes that route and returns the corresponding HTML response to the browser.
+
+User clicks About
+      ↓
+Request → Server
+      ↓
+Server handles /about
+      ↓
+Returns HTML response
+      ↓
+Browser displays the page
+
+🌍 Real-Time Example
+
+Think of a traditional server-rendered website. When the user visits:
+
+/products
+
+the request goes to the server, which generates or returns the HTML for the Products page.
+
+When the user visits:
+
+/about
+
+another request goes to the server, which returns the HTML for the About page.
+
+Server-side routing is common in traditional JSP/Servlet, PHP, Django, ASP.NET MVC, and other server-rendered applications.
+
+❓ What is Client-Side Routing?
+
+Client-side routing means navigation is handled inside the browser using JavaScript. In a React SPA, React Router changes the URL and renders the component matching that route without requesting a completely new HTML document for every navigation.
+
+User clicks About
+      ↓
+React Router handles navigation
+      ↓
+URL changes to /about
+      ↓
+Router matches /about
+      ↓
+<About /> renders
+      ↓
+No full-page reload
+🌍 Real-Time Example
+
+Consider a React dashboard:
+
+/dashboard  → Dashboard Component
+/profile    → Profile Component
+/orders     → Orders Component
+/cart       → Cart Component
+
+When the user navigates from Dashboard to Profile, React Router can render the Profile component without reloading the entire application.
+
+This is commonly used in Single Page Applications (SPAs) such as dashboards, admin portals, internal enterprise applications, and other highly interactive web applications.
+
+🔥 Main Difference
+
+| Server-Side Routing                            | Client-Side Routing                                |
+| ---------------------------------------------- | -------------------------------------------------- |
+| Server handles route navigation                | Browser/JavaScript router handles route navigation |
+| Server returns an HTML response                | Matching UI/component is rendered client-side      |
+| Traditional navigation may reload the document | SPA navigation avoids a full-page document reload  |
+| Common in server-rendered applications         | Common in React SPAs                               |
+| Example: JSP, PHP, Django                      | Example: React Router                              |
+ 
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ useParams + Dynamic routing
+ Step 1: We have multiple products in Body
+
+Your API gives:
+
+[
+  { id: 1, title: "Product 1" },
+  { id: 2, title: "Product 2" },
+  { id: 3, title: "Product 3" }
+]
+
+You display them using:
+
+filteredRestros.map((restrodata) => {
+    return (
+        <Restaurantcard
+            restaurantdata={restrodata}
+        />
+    );
+});
+
+Now you want this behavior:
+
+Click Product 1 → Open details of Product 1
+Click Product 2 → Open details of Product 2
+Click Product 3 → Open details of Product 3
+Step 2: Put the Product ID in the URL
+
+In your Body component, you wrapped each card with Link:
+
+<Link
+    key={restrodata.id}
+    to={"/restaurants/" + restrodata.id}
+>
+    <Restaurantcard
+        restaurantdata={restrodata}
+    />
+</Link>
+
+Suppose:
+
+restrodata.id = 5;
+
+Then:
+
+to={"/restaurants/" + restrodata.id}
+
+becomes:
+
+/restaurants/5
+
+So when the user clicks Product 5:
+
+Product 5 Card
+      ↓
+<Link to="/restaurants/5">
+      ↓
+URL becomes
+/restaurants/5
+
+⭐ This is where you are passing the actual ID into the URL.
+
+Step 3: Tell React Router that this ID is dynamic
+
+Now we configure our route:
+
+{
+    path: "/restaurants/:id",
+    element: <RestaurantMenu />
+}
+
+The : has a special meaning.
+
+:id
+ ↓
+Dynamic Route Parameter
+
+It tells React Router:
+
+Whatever value comes after /restaurants/, capture it with the name id.
+
+Therefore:
+
+/restaurants/1   → id = "1"
+
+/restaurants/5   → id = "5"
+
+/restaurants/100 → id = "100"
+
+We don't need to create:
+
+/restaurants/1
+/restaurants/2
+/restaurants/3
+/restaurants/4
+
+separately.
+
+One route handles all of them:
+
+/restaurants/:id
+
+⭐ This is called Dynamic Routing.
+
+Step 4: User clicks Product 5
+
+Now the user clicks:
+
+Product 5
+
+Your Link changes the URL:
+
+/restaurants/5
+
+React Router checks:
+
+path: "/restaurants/:id"
+
+It matches successfully:
+
+Configured Route
+
+/restaurants/:id
+              ↑
+              5
+
+Actual URL
+
+/restaurants/5
+
+Therefore React Router renders:
+
+<RestaurantMenu />
+Step 5: But how does RestaurantMenu get 5?
+
+This is exactly where useParams() enters.
+
+Inside RestaurantMenu:
+
+import { useParams } from "react-router-dom";
+
+const RestaurantMenu = () => {
+
+    const { id } = useParams();
+
+    console.log(id);
+
+};
+
+If the current URL is:
+
+/restaurants/5
+
+then:
+
+const { id } = useParams();
+
+gives:
+
+id = "5";
+
+⭐ useParams() reads the dynamic parameters captured from the current matched URL.
+
+Step 6: Use that ID in the API call
+
+Previously, maybe your API was hardcoded:
+
+const data = await fetch(
+    "https://dummyjson.com/products/1"
+);
+
+This always fetches Product 1.
+
+Now we have:
+
+const { id } = useParams();
+
+So we can write:
+
+const data = await fetch(
+    "https://dummyjson.com/products/" + id
+);
+
+If URL is:
+
+/restaurants/5
+
+then:
+
+id = "5";
+
+So API becomes:
+
+https://dummyjson.com/products/5
+
+Now we get Product 5 data.
+
+🔥 Complete Movie
+API gives multiple products
+        ↓
+Body displays Product Cards
+        ↓
+Each product has an ID
+        ↓
+Product 5 has id = 5
+        ↓
+We create:
+
+<Link to={"/restaurants/" + restrodata.id}>
+
+        ↓
+User clicks Product 5
+        ↓
+URL becomes:
+
+/restaurants/5
+
+        ↓
+React Router checks:
+
+/restaurants/:id
+
+        ↓
+:id captures "5"
+        ↓
+Router renders:
+
+<RestaurantMenu />
+
+        ↓
+Inside RestaurantMenu:
+
+const { id } = useParams();
+
+        ↓
+id = "5"
+        ↓
+Use ID in API:
+
+/products/5
+
+        ↓
+Fetch Product 5 data
+        ↓
+setMenuData(json)
+        ↓
+State changes
+        ↓
+RestaurantMenu re-renders
+        ↓
+Product 5 details displayed
+⭐ Just remember these 3 lines
+
+1️⃣ Link puts the actual ID in the URL:
+
+<Link to={"/restaurants/" + restrodata.id}>
+
+2️⃣ :id defines/captures the dynamic URL parameter:
+
+path: "/restaurants/:id"
+
+3️⃣ useParams() reads that ID inside the component:
+
+const { id } = useParams();
+Interview answer
+
+I used dynamic routing to display details based on an ID. When the user clicks a product card, I pass the product ID through the URL using React Router's Link, 
+for example /restaurants/5. I configured the route as /restaurants/:id, where :id is the dynamic route parameter. Inside the RestaurantMenu component,
+ I use the useParams Hook to get that ID from the URL and use it to make the corresponding API call and display the product details.
+ 
+ ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

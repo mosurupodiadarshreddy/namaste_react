@@ -20,9 +20,9 @@ Custom Hook = reusable logic that involves React state or lifecycle
 👉 This is wrong
 
 Because:
-
 Helper functions → normal JS functions (no React hooks)
 Custom hooks → must use React hooks
+
 🔹 Example to understand clearly
 ❌ Normal Helper Function (Utility)
 function formatDate(date) {
@@ -58,6 +58,7 @@ function Profile() {
 
   return <h1>{user?.name}</h1>;
 }
+
 🔥 Why we use Custom Hooks (SRP + Modularity)
 
 Instead of writing API logic inside components:
@@ -110,6 +111,7 @@ This allows React (and tools like ESLint) to:
 
 Ensure hooks are called correctly
 Prevent mistakes like calling hooks inside loops or conditions
+
 👉 Reason 2: Developer clarity
 
 When you see:
@@ -121,6 +123,7 @@ You instantly know:
 It uses React hooks internally
 It manages state/effects
 It must follow hook rules
+
 ❌ Without use (bad practice)
 function productMenu() {
   const [data, setData] = useState(); // ❌ confusing
@@ -131,6 +134,7 @@ Problems:
 Looks like a normal function
 Violates React conventions
 Lint rules may not detect errors
+
 ✅ With use (correct)
 function useProductMenu() {
   const [data, setData] = useState();

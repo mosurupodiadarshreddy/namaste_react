@@ -28,9 +28,7 @@ so while executing body component it sees useEffect and save this callback funct
 
 for showing in action open code practice and see put the debugger and observe after rendering completion only it will go to the useeffect block 
 
-
 why we learning the useeffect u know right because of second approach render component fetch api and re-render the component 
-
 
 goinf with example :: 
 

@@ -150,4 +150,5 @@ If interviewer asks Explain nested routing in your project:
 
 Say this:
 
-We implemented nested routing using React Router. We created a layout component that contains common components like Header and Footer, and used Outlet to render child routes like Home, About, and Contact. This ensures Header and Footer remain constant while only the body content changes based on the route.
+We implemented nested routing using React Router. We created a layout component that contains common components like Header and Footer,
+ and used Outlet to render child routes like Home, About, and Contact. This ensures Header and Footer remain constant while only the body content changes based on the route.

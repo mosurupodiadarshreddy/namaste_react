@@ -26,6 +26,7 @@ window is the global browser object (from JavaScript environment)
 
 "online"
 "offline"
+
 🔹 3. How event listeners work (core concept)
 window.addEventListener("online", callback);
 
@@ -43,6 +44,7 @@ Browser keeps listening in background
 Internet goes OFF
 Browser fires "offline" event
 Your callback runs instantly
+
 🧠 Important:
 
 You are NOT checking continuously ❌
@@ -54,21 +56,17 @@ When this runs:
 
 setOnlineStatus(false);
 
-👉 React does:
+👉 React does:Updates state → Triggers re-render → Component using this hook runs again
 
-Updates state
-Triggers re-render
-Component using this hook runs again
 🔹 5. Now connect to your Body component
 const onlineStatus = useOnlineStatus();
 
-👉 This means:
+👉 This means: Body is subscribed to online/offline changes
 
-Body is subscribed to online/offline changes
-🔥 When internet goes OFF:
-Browser fires "offline"
-Hook runs → setOnlineStatus(false)
-React re-renders Body
+🔥 When internet goes OFF: Browser fires "offline"
+
+Hook runs → setOnlineStatus(false) → React re-renders Body
+
 This condition runs:
 if (onlineStatus === false) {
   return <div>🔴 Sorry Dude you are offline</div>;
@@ -76,11 +74,8 @@ if (onlineStatus === false) {
 
 👉 UI updates instantly ⚡
 
-🔥 When internet comes back:
-"online" event fires
-setOnlineStatus(true)
-Re-render happens
-Full UI comes back
+🔥 When internet comes back:"online" event fires → setOnlineStatus(true) → Re-render happens → Full UI comes back
+
 🔹 6. Why it feels “instant”?
 
 Because:
@@ -91,4 +86,4 @@ React state updates are fast + optimized
 
 🔹 When do "online" / "offline" events actually fire?
 
-They fire ONLY when network status changes:
+They fire ONLY when network status changes

@@ -55,8 +55,6 @@ Short Definition for Interview
 
 You can say like this:
 
-useParams is a React Router hook used to access dynamic URL parameters from the route. It returns an object containing key-value pairs of the URL parameters, which can be used inside functional components.
-
-
-
+useParams is a React Router hook used to access dynamic URL parameters from the route. It returns an object containing key-value pairs of the URL parameters, 
+which can be used inside functional components.
 ===========================================================================================

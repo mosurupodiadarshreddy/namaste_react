@@ -95,12 +95,11 @@ Each function name clearly tells what it does
 2. Easy to change
 API changes → only fetchUser
 UI changes → only displayUser
-3. Reusable
 
+3. Reusable
 You can reuse validateUser() anywhere
 
 4. Testable
-
 You can test each function separately
 
 🧠 Real-life analogy

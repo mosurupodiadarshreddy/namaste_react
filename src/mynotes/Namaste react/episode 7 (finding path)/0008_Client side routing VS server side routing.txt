@@ -151,7 +151,9 @@ Explain client side routing vs server side routing
 
 Answer:
 
-Server-side routing means when a user navigates to a new page, a request is sent to the server and the server returns a new HTML page, causing a full page reload. Client-side routing means routing is handled in the browser using JavaScript, where only the required component is updated without reloading the entire page. Client-side routing is used in Single Page Applications like React for faster navigation and better user experience.
+Server-side routing means when a user navigates to a new page, a request is sent to the server and the server returns a new HTML page, causing a full page reload. 
+Client-side routing means routing is handled in the browser using JavaScript, where only the required component is updated without reloading the entire page. 
+Client-side routing is used in Single Page Applications like React for faster navigation and better user experience.
 
 7. Final One-Line Difference (Remember This)
 
